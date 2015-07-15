@@ -1,3 +1,5 @@
+import sbtprotobuf.{ProtobufPlugin=>PB}
+
 name := "protobufUI"
 
 version := "1.0"
@@ -15,3 +17,5 @@ libraryDependencies ++= Seq(
   , "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test"
   , "com.google.protobuf" % "protobuf-java" % "3.0.0-alpha-3.1"
 )
+
+PB.protobufSettings
