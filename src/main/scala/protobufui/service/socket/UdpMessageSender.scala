@@ -12,23 +12,15 @@ import protobufui.service.socket.UdpMessageSender._
  */
 
 object UdpMessageSender {
-
   case class SendMessage(msg: ByteString)
-
   case class UdpMessageSenderNotReady()
-
   case class UdpMessageSenderReady()
-
   case class UdpMessageSendSuccessfully()
-
   case class Finalize()
-
   case class UdpMessageSenderFinalized()
-
 }
 
 class UdpMessageSender(_iNetSocketAddress: InetSocketAddress) extends Actor with ActorLogging {
-
 
   IO(Udp)(context.system) ! Udp.SimpleSender
 
