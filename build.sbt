@@ -1,4 +1,4 @@
-import sbtprotobuf.{ProtobufPlugin=>PB}
+import sbtprotobuf.{ProtobufPlugin => PB}
 
 name := "protobufUI"
 
@@ -16,6 +16,7 @@ libraryDependencies ++= Seq(
   , "org.mockito" % "mockito-core" % "2.0.3-beta" % "test"
   , "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test"
   , "com.google.protobuf" % "protobuf-java" % "3.0.0-alpha-3.1"
+  , "org.scala-lang" % "scala-reflect" % "2.11.7"
 
 )
 
