@@ -1,18 +1,12 @@
 package protobufui.service.mock
 
-import java.net.InetSocketAddress
-import java.util.concurrent.TimeUnit
-
 import akka.actor.{ActorSystem, Props}
 import akka.io.Tcp.{PeerClosed, Received}
-import akka.testkit.{TestProbe, ImplicitSender, TestActorRef, TestKit}
+import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
 import akka.util.ByteString
 import org.scalatest.{Matchers, WordSpecLike}
 import protobufui.service.mock.PbMessageParser.Parsed
 import test.PbTest.Person
-
-import scala.concurrent.duration.FiniteDuration
-
 
 class PbMessageParserSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLike with Matchers with ImplicitSender{
 
