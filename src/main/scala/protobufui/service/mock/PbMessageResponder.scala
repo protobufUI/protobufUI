@@ -8,14 +8,9 @@ import protobufui.service.mock.PbMessageResponder.Respond
 
 import scala.reflect._
 
-/**
- * Created by krever on 7/15/15.
- */
 
 object PbMessageResponder {
-
   case class Respond(msg: MessageLite, connection: ActorRef)
-
 }
 
 
