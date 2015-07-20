@@ -1,16 +1,16 @@
-package protobufui.service.sources
+package protobufui.service.source
 
 import akka.actor.{ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
 import org.scalatest.{Matchers, WordSpecLike}
-import protobufui.service.sources.JarLoader.Load
+import protobufui.service.source.JarLoader.Load
 
 /**
  * Created by pcejrowski on 2015-07-16.
  */
 class JarLoaderSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLike with Matchers with ImplicitSender {
 
-    def this() = this(ActorSystem("MessageActorSpec"))
+    def this() = this(ActorSystem("JarLoaderSpec"))
 
     def fixture = new {
       val parent = TestProbe()

@@ -1,10 +1,10 @@
-package protobufui.service.sources
+package protobufui.service.source
 
 import java.io.File
 
 import akka.actor.{Actor, ActorLogging}
 import akka.io.Tcp.PeerClosed
-import protobufui.service.sources.JarLoader.Load
+import protobufui.service.source.JarLoader.Load
 
 import scala.util.{Failure, Success}
 
