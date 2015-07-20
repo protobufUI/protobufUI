@@ -24,7 +24,5 @@ object JarLoader {
           case Success(value) => context.parent ! JarReference()
           case Failure(e) => log.error(e, "Java Archive could not be loaded.")
         }
-      case PeerClosed =>
-        context stop self
     }
   }
