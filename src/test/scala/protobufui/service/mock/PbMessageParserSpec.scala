@@ -1,7 +1,7 @@
 package protobufui.service.mock
 
 import akka.actor.{ActorSystem, Props}
-import akka.io.Tcp.{PeerClosed, Received}
+import akka.io.Tcp.{PeerClosed, Received, Register}
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
 import akka.util.ByteString
 import org.scalatest.{Matchers, WordSpecLike}
@@ -13,19 +13,31 @@ class PbMessageParserSpec(_system: ActorSystem) extends TestKit(_system) with Wo
   def this() = this(ActorSystem("ReceiveActorSpec"))
   
     "PbMessageParser" should {
+
+      "register self to given connection on start" in {
+        //give
+        val connection = TestProbe()
+        //when
+        val parser = TestActorRef(Props(new PbMessageParser[Person](classOf[Person], connection.ref)), self, "Parser1")
+        //then
+        connection.expectMsg(Register(parser))
+      }
+
       "parse message and return the result" in {
         //given
         val person: Person = Person.newBuilder().setName("Jan").setEmail("j@k.pl").setId(1).build()
-        val parser = TestActorRef(Props(new PbMessageParser[Person](classOf[Person])), self, "Parser1")
+        val connection = TestProbe()
+        val parser = TestActorRef(Props(new PbMessageParser[Person](classOf[Person], connection.ref)), self, "Parser2")
         val msg = Received(ByteString(person.toByteArray))
         //when
         parser ! msg
         //then
-        expectMsg(Parsed(person))
+        expectMsg(Parsed(person, connection.ref))
       }
       "ignore invalid data" in {
         //given
-        val parser = TestActorRef(Props(new PbMessageParser[Person](classOf[Person])), self, "Parser2")
+        val connection = TestProbe()
+        val parser = TestActorRef(Props(new PbMessageParser[Person](classOf[Person], connection.ref)), self, "Parser3")
         //when
         parser ! Received(ByteString(1,2,3,4,5))
         //then
@@ -33,7 +45,8 @@ class PbMessageParserSpec(_system: ActorSystem) extends TestKit(_system) with Wo
       }
       "stop self on PeerClosed" in {
         //given
-        val parser = TestActorRef(Props(new PbMessageParser[Person](classOf[Person])), self, "Parser3")
+        val connection = TestProbe()
+        val parser = TestActorRef(Props(new PbMessageParser[Person](classOf[Person], connection.ref)), self, "Parser4")
         val probe = TestProbe()
         probe watch parser
         //when

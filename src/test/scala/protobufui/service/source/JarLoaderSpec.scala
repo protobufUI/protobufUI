@@ -1,9 +1,9 @@
-package protobufui.service.sources
+package protobufui.service.source
 
 import akka.actor.{ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
 import org.scalatest.{Matchers, WordSpecLike}
-import protobufui.service.sources.JarLoader.Load
+import protobufui.service.source.JarLoader.Load
 
 /**
  * Created by pcejrowski on 2015-07-16.
