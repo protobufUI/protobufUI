@@ -17,7 +17,7 @@ class PbMessageParser[T <: MessageLite](expectedMsgClass: Class[T], connection: 
 
   import Tcp._
 
-  val msgParser: Parser[T] = expectedMsgClass.getField("PARSER").get(null).asInstanceOf[Parser[T]]
+  val msgParser: Parser[T] = expectedMsgClass.getMethod("getParserForType").invoke(expectedMsgClass.getMethod("getDefaultInstance").invoke(null)).asInstanceOf[Parser[T]]
 
   connection ! Register(self)
 
