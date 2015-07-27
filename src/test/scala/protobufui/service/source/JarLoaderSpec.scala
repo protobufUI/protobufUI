@@ -1,5 +1,7 @@
 package protobufui.service.source
 
+import java.io.File
+
 import akka.actor.{ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
 import org.scalatest.{Matchers, WordSpecLike}
@@ -15,7 +17,7 @@ class JarLoaderSpec(_system: ActorSystem) extends TestKit(_system) with WordSpec
     def fixture = new {
       val parent = TestProbe()
       val props = Props(new JarLoader())
-      val jarFile = ??? //jar file mock ??
+      val jarFile = new File(System getProperty ("user.home"), "test.jar")
     }
 
     "JarLoaderSpec" should {
