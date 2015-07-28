@@ -3,7 +3,7 @@ package protobufui.service.socket
 import java.net.InetSocketAddress
 
 import akka.actor.{ActorSystem, Props}
-import akka.io.Tcp.{Write, Connected}
+import akka.io.Tcp.{Connected, Write}
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
 import akka.util.ByteString
 import org.scalatest.{Matchers, WordSpecLike}
@@ -45,9 +45,9 @@ class TcpMessageSenderSpec(_system: ActorSystem) extends TestKit(_system) with W
       parent.expectMsg(TcpMessageSenderReady)
       messageSender ! SendMessage(msg)
       //then
+      ioTcpProbe.receiveN(2) // ignore bind and register
       ioTcpProbe.expectMsg(Write(ByteString(msg.toByteArray)))
     }
-
   }
 
 }
