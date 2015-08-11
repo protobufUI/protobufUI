@@ -1,10 +1,7 @@
 package protobufui.service.source
 
-import java.io.{InputStreamReader, BufferedReader, File}
+import java.io.{BufferedReader, InputStreamReader}
 
-/**
- * Created by pcejrowski on 2015-07-20.
- */
 object ProtoCompiler {
   val temporaryPath = ???
 }
