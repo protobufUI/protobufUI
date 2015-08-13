@@ -18,7 +18,6 @@ libraryDependencies ++= Seq(
   , "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test"
   , "com.google.protobuf" % "protobuf-java" % "3.0.0-alpha-3.1"
   , "org.scala-lang" % "scala-reflect" % "2.11.7"
-  , "org.scalafx" %% "scalafx" % "8.0.40-R8"
 )
 
 PB.protobufSettings

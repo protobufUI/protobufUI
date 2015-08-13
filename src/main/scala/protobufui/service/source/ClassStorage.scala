@@ -29,15 +29,11 @@ object ClassStorage {
 
 }
 
-class ClassStorage(workspaceStorage: File)
-  extends Actor with ActorLogging {
+class ClassStorage(workspaceStorage: File) extends Actor with ActorLogging {
+
+  workspaceStorage getParentFile() mkdirs
 
   val urlClassLoader = URLClassLoader.newInstance(Array(workspaceStorage.toURI.toURL))
-
-  def this(workspaceStorage: File) {
-    this(workspaceStorage)
-    workspaceStorage getParentFile() mkdirs
-  }
 
   def receive = {
     case StoreJar(file) =>
