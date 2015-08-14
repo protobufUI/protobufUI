@@ -22,7 +22,7 @@ class JarLoader
     case LoadJar(file: File) => ???
   }
 
-  def saveJarAsSources(jarFile: File): Stream[(File, String)] = {
+  def saveJarAsSources(jarFile: File): Unit = {
     val fileURL = jarFile.toURI.toString
     val jarInputStream = new JarInputStream(new FileInputStream(jarFile))
     Stream.continually(jarInputStream.getNextEntry).takeWhile(_ != null)
@@ -31,9 +31,9 @@ class JarLoader
       .map(pathInJar => (new URI("jar:" + fileURL + "!/" + pathInJar).toURL, pathInJar))
       .map((t: (URL, String)) => (t._1.openConnection.getInputStream, t._2))
       .map((t: (InputStream, String)) => (Source.fromInputStream(t._1).getLines().mkString("\n"), t._2))
-      .map((t: (String, String)) => {
-      // how to make (x:String,y:String) to not use _1 and _2
-      val fileWithSources: File = new File(workspaceStorage, t._2) // might not work: then change into ... +"/"+ ...
+      .foreach((t: (String, String)) => {
+      // TODO how to make (x:String,y:String) to not use _1 and _2
+      val fileWithSources: File = new File(workspaceStorage, t._2) // TODO might not work: then change into ... +"/"+ ...
       Utils.createFileWithContent(fileWithSources, t._1)
     })
 
