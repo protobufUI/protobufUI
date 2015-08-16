@@ -1,15 +1,12 @@
 package protobufui.service.source
 
 import java.io.File
-import java.lang.Class
 import java.net.URLClassLoader
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, OpenOption, StandardOpenOption}
 import javax.tools.ToolProvider
 
 object Utils {
-
-
   def compile(file: File): File = {
     val javac = ToolProvider.getSystemJavaCompiler
     javac.run(null, null, null, file.getPath)
@@ -28,7 +25,7 @@ object Utils {
 }
 class ClassLoader(rootFile:File){
   val urlClassLoader = URLClassLoader.newInstance(Array(rootFile.toURI.toURL))
-  def loadClass(className: String): Class[_] = {
+  def load(className: String): Class[_] = {
     val clazz: Class[_] =  urlClassLoader.loadClass(className)
     ClassesContainer.putClass(className, clazz)
     Class.forName(className, true, urlClassLoader)

@@ -8,8 +8,7 @@ import protobufui.service.source.Load
 import scala.sys.process._
 
 
-class ProtoLoader
-  extends Actor with ActorLogging {
+class ProtoLoader extends Actor with ActorLogging {
 
   val  uuid = java.util.UUID.randomUUID toString
   val temporaryStorage: File = new File(System.getProperty("java.io.tmpdir"), "protobuf/" + uuid)

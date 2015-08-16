@@ -16,16 +16,14 @@ object ClassesLoader {
   case class LoadWorkspace()
 
   /**
-   * Allows to load classes from not implicitly defined source.
+   * Loads classes from source that might be .proto file, directory or .jar file
    * @param file
    */
   case class Put(file: File)
 
 }
 
-class ClassesLoader(workspaceRoot: File)
-  extends Actor with ActorLogging {
-
+class ClassesLoader(workspaceRoot: File) extends Actor with ActorLogging {
 
   private val workspaceLoader = context.actorOf(Props(classOf[WorkspaceLoader], workspaceRoot), "workspaceLoader")
 

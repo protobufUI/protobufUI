@@ -23,7 +23,7 @@ class DirectoryLoaderSpec(_system: ActorSystem) extends TestKit(_system) with Wo
      }
 
   "DirectoryLoaderSpec" should {
-     "classes from directory are compiled and loaded" in {
+     "compile and load classes from directory" in {
        // arrange
        val f = fixture
        val directoryLoader = TestActorRef(f.props, f.parent.ref, "DirectoryLoaderSpec")
