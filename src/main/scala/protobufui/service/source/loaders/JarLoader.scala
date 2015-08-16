@@ -21,6 +21,7 @@ class JarLoader
     case Load(file: File) =>
       val fileURL = file.toURI.toString
       val jarInputStream = new JarInputStream(new FileInputStream(file))
+
     Stream.continually(jarInputStream.getNextEntry).takeWhile(_ != null)
       .map(_.getName)
       .filter(_.endsWith(".java"))
