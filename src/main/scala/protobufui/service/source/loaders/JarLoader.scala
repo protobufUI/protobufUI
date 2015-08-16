@@ -5,26 +5,22 @@ import java.net.{URI, URL}
 import java.util.jar.JarInputStream
 
 import akka.actor.{Actor, ActorLogging}
-import protobufui.service.source.{PutJavaFilesFromDirectory, Utils}
+import protobufui.service.source.ClassesLoader.{Put}
+import protobufui.service.source.{Load, Utils}
 
 import scala.io.Source
-
-case class LoadJar(file: File)
 
 class JarLoader
   extends Actor with ActorLogging {
 
-  val workspaceStorage: File = new File(System.getProperty("java.io.tmpdir"), "protobuf/" + uuid)
+  val uuid = java.util.UUID.randomUUID toString
 
-  def uuid = java.util.UUID.randomUUID.toString
+  val temporaryStorage: File = new File(System.getProperty("java.io.tmpdir"), "protobuf/" + uuid)
 
   override def receive: Receive = {
-    case LoadJar(file: File) => ???
-  }
-
-  def saveJarAsSources(jarFile: File): Stream[(File, String)] = {
-    val fileURL = jarFile.toURI.toString
-    val jarInputStream = new JarInputStream(new FileInputStream(jarFile))
+    case Load(file: File) =>
+      val fileURL = file.toURI.toString
+      val jarInputStream = new JarInputStream(new FileInputStream(file))
     Stream.continually(jarInputStream.getNextEntry).takeWhile(_ != null)
       .map(_.getName)
       .filter(_.endsWith(".java"))
@@ -32,11 +28,10 @@ class JarLoader
       .map((t: (URL, String)) => (t._1.openConnection.getInputStream, t._2))
       .map((t: (InputStream, String)) => (Source.fromInputStream(t._1).getLines().mkString("\n"), t._2))
       .map((t: (String, String)) => {
-      // how to make (x:String,y:String) to not use _1 and _2
-      val fileWithSources: File = new File(workspaceStorage, t._2) // might not work: then change into ... +"/"+ ...
+      val fileWithSources: File = new File(temporaryStorage, t._2)
       Utils.createFileWithContent(fileWithSources, t._1)
     })
 
-    context.parent ! PutJavaFilesFromDirectory(workspaceStorage)
+    context.parent ! Put(temporaryStorage)
   }
 }

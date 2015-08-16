@@ -1,15 +1,14 @@
 package protobufui.service.source
 
 import java.io.File
+import java.lang.Class
 import java.net.URLClassLoader
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, OpenOption, StandardOpenOption}
 import javax.tools.ToolProvider
 
 object Utils {
-  def loadClass(classLoader: URLClassLoader, className: String): Class[_] = {
-    Class.forName(className, true, classLoader)
-  }
+
 
   def compile(file: File): File = {
     val javac = ToolProvider.getSystemJavaCompiler
@@ -17,7 +16,6 @@ object Utils {
     file
   }
 
-  // fixme how to make it works for as File class extension
   implicit def createFileWithContent(file: File, content: String): Unit = {
     file.getParentFile().mkdirs
     val openOption: OpenOption = StandardOpenOption.CREATE
@@ -27,4 +25,12 @@ object Utils {
   def getFileTree(file: File): Stream[File] =
     file #:: (if (file.isDirectory) file.listFiles().toStream.flatMap(getFileTree)
     else Stream.empty)
+}
+class ClassLoader(rootFile:File){
+  val urlClassLoader = URLClassLoader.newInstance(Array(rootFile.toURI.toURL))
+  def loadClass(className: String): Class[_] = {
+    val clazz: Class[_] =  urlClassLoader.loadClass(className)
+    ClassesContainer.putClass(className, clazz)
+    Class.forName(className, true, urlClassLoader)
+  }
 }

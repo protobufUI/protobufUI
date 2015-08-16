@@ -5,15 +5,17 @@ import java.util.concurrent.ConcurrentHashMap
 
 
 object ClassesContainer {
-  // should be val / how to fix this ?
-  var classes: ConcurrentHashMap[String, Class[_]] = new ConcurrentHashMap[String, Class[_]]()
+
+  private val classes: ConcurrentHashMap[String, Class[_]] = new ConcurrentHashMap[String, Class[_]]()
+
+  def exists(clazzName: String): Boolean = classes.containsKey(clazzName)
 
   def putClass(clazz: (String, Class[_])) = classes.put(clazz._1, clazz._2)
 
-  def getClass(className: String): Class[_] = classes.get(className)
+  def getClass(clazzName: String): Class[_] = classes.get(clazzName)
 
-  def getInstanceOf(className: String): Any = {
-    val clazz: Class[_] = Class.forName(className)
+  def getInstanceOf(clazzName: String): Any = {
+    val clazz: Class[_] = Class.forName(clazzName)
     val constructor: Constructor[_] = clazz.getConstructor(classOf[String])
     constructor.newInstance()
   }
