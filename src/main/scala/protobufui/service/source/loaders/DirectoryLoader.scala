@@ -17,8 +17,8 @@ class DirectoryLoader(workspaceRoot: File) extends Actor with ActorLogging {
         .map(Utils.compile)
         .flatMap(getClassFiles(_))
         .map(file => {
-        copyClassFilesToWorkspace(directory, file)
-        extractClassName(directory, file)
+        copyToWorkspace(file,directory)
+        extractClassName(file,directory)
       })
         .foreach(classLoader.load(_))
 
@@ -36,13 +36,13 @@ class DirectoryLoader(workspaceRoot: File) extends Actor with ActorLogging {
     })
   }
 
-  def copyClassFilesToWorkspace(classFile: File, directory: File): Unit = {
-    val source = classFile.toPath
-    val ending: String = classFile.getAbsolutePath.replace(directory.getAbsolutePath, "")
-      val destinationFile: File = new File(workspaceRoot, ending)
-      destinationFile.mkdirs()
-      val destination = destinationFile.toPath
-      Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
+  def copyToWorkspace(file: File, directory: File): Unit = {
+    val sourcePath = file.toPath
+    val relativePath: String = file.getAbsolutePath.replace(directory.getAbsolutePath, "")
+    val destinationFile: File = new File(workspaceRoot, relativePath)
+    destinationFile.mkdirs()
+    val destinationPath = destinationFile.toPath
+    Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING)
   }
 
   def extractClassName(file: File, rootDirectory: File): String = {

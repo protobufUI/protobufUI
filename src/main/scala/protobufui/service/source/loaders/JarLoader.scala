@@ -25,20 +25,20 @@ class JarLoader extends Actor with ActorLogging {
       .map(_.getName)
       .filter(_.endsWith(".java"))
       .map(pathInJar => (new URI("jar:" + fileURL + "!/" + pathInJar).toURL, pathInJar))
-      .map(
+      .map
     { case (jarURL, packageLikePathInJar) =>
       (jarURL.openConnection.getInputStream, packageLikePathInJar)
-    })
-      .map(
+    }
+      .map
     { case (inputStream, packageLikePathInJar) =>
       (Source.fromInputStream(inputStream).getLines().mkString("\n"), packageLikePathInJar)
-    })
-      .map(
+    }
+      .foreach
     { case (sources, packageLikePathInJar) => {
       val fileWithSources: File = new File(temporaryStorage, packageLikePathInJar)
       Utils.createFileWithContent(fileWithSources, sources)
     }
-    })
+    }
 
     context.parent ! Put(temporaryStorage)
   }
