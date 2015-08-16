@@ -1,11 +1,11 @@
 package protobufui.service.source.loaders
 
-import java.io.{File, FileInputStream, InputStream}
-import java.net.{URI, URL}
+import java.io.{File, FileInputStream}
+import java.net.URI
 import java.util.jar.JarInputStream
 
 import akka.actor.{Actor, ActorLogging}
-import protobufui.service.source.ClassesLoader.{Put}
+import protobufui.service.source.ClassesLoader.Put
 import protobufui.service.source.{Load, Utils}
 
 import scala.io.Source
@@ -26,11 +26,19 @@ class JarLoader
       .map(_.getName)
       .filter(_.endsWith(".java"))
       .map(pathInJar => (new URI("jar:" + fileURL + "!/" + pathInJar).toURL, pathInJar))
-      .map((t: (URL, String)) => (t._1.openConnection.getInputStream, t._2))
-      .map((t: (InputStream, String)) => (Source.fromInputStream(t._1).getLines().mkString("\n"), t._2))
-      .map((t: (String, String)) => {
-      val fileWithSources: File = new File(temporaryStorage, t._2)
-      Utils.createFileWithContent(fileWithSources, t._1)
+      .map(
+    { case (jarURL, packageLikePathInJar) =>
+      (jarURL.openConnection.getInputStream, packageLikePathInJar)
+    })
+      .map(
+    { case (inputStream, packageLikePathInJar) =>
+      (Source.fromInputStream(inputStream).getLines().mkString("\n"), packageLikePathInJar)
+    })
+      .map(
+    { case (sources, packageLikePathInJar) => {
+      val fileWithSources: File = new File(temporaryStorage, packageLikePathInJar)
+      Utils.createFileWithContent(fileWithSources, sources)
+    }
     })
 
     context.parent ! Put(temporaryStorage)

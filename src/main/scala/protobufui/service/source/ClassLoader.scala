@@ -16,7 +16,7 @@ object ClassesLoader {
   case class LoadWorkspace()
 
   /**
-   * Allows to load classes from not implicitly defined source.
+   * Loads classes from source that might be .proto file, directory or .jar file
    * @param file
    */
   case class Put(file: File)
