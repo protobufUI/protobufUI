@@ -1,13 +1,11 @@
 package protobufui.run
 
-import java.io.File
 import java.net.InetSocketAddress
 
 import akka.actor.{Actor, ActorSystem, Props}
 import com.google.protobuf.UnknownFieldSet
 import protobufui.service.mock.PbMessageParser.Parsed
 import protobufui.service.mock.{Mock, MockDefinition}
-import protobufui.service.source.loaders.WorkspaceLoader
 import protobufui.util.Propagator.{Propagated, RegisterListener}
 
 
@@ -18,23 +16,6 @@ object MessageListener extends App {
     System.exit(1)
   }
 
-  val port = args(0).toInt
-  val socketAddress = new InetSocketAddress("localhost", port)
-  val mockDef = MockDefinition[UnknownFieldSet, UnknownFieldSet](socketAddress, classOf[UnknownFieldSet], _ => UnknownFieldSet.getDefaultInstance)
-  val actorSystem = ActorSystem("MessageListener")
-  val mock = actorSystem.actorOf(Props(new Mock(mockDef)), "mock")
-  val printer = actorSystem.actorOf(Props(new Printer), "printer")
-  val classes = actorSystem.actorOf(Props(new WorkspaceLoader(workspaceRoot)), "classes")
-  
-  mock ! RegisterListener(printer)
-  //Testing part
-  //val sender = actorSystem.actorOf(Props(new Sender(socketAddress)), "sender")
-  //val msg = Person.newBuilder().setId(1).setName("JK").build()
-  //import scala.concurrent.duration._
-  //import scala.concurrent.ExecutionContext.Implicits.global
-  //actorSystem.scheduler.schedule(1 seconds, 5 seconds, sender, ByteString(msg.toByteArray) )
-  private val workspaceRoot: File = new File(".")
-
   class Printer extends Actor {
     def receive = {
       case Propagated(Parsed(msg, _)) =>
@@ -43,8 +24,25 @@ object MessageListener extends App {
         Console.out.println("===========")
     }
   }
-  
-  
+
+  val port = args(0).toInt
+  val socketAddress = new InetSocketAddress("localhost", port)
+
+  val mockDef = MockDefinition[UnknownFieldSet, UnknownFieldSet](socketAddress, classOf[UnknownFieldSet], _ => UnknownFieldSet.getDefaultInstance)
+
+  val actorSystem = ActorSystem("MessageListener")
+
+  val mock = actorSystem.actorOf(Props(new Mock(mockDef)), "mock")
+  val printer = actorSystem.actorOf(Props(new Printer), "printer")
+
+  mock ! RegisterListener(printer)
+  //Testing part
+  //val sender = actorSystem.actorOf(Props(new Sender(socketAddress)), "sender")
+  //val msg = Person.newBuilder().setId(1).setName("JK").build()
+  //import scala.concurrent.duration._
+  //import scala.concurrent.ExecutionContext.Implicits.global
+  //actorSystem.scheduler.schedule(1 seconds, 5 seconds, sender, ByteString(msg.toByteArray) )
+
   sys.addShutdownHook {
     println("Shutting down ...")
     actorSystem.shutdown()
