@@ -26,6 +26,5 @@ class ClassesLoaderSpec(_system: ActorSystem) extends TestKit(_system) with Word
       jarLoader ! Load(f.jarFile)
       // assert
     }
-
   }
 }

@@ -20,7 +20,7 @@ class DirectoryLoader(workspaceRoot: File) extends Actor with ActorLogging {
         copyToWorkspace(file,directory)
         extractClassName(file,directory)
       })
-        .foreach(classLoader.load(_))
+        .foreach(classLoader.loadAndStore(_))
 
         context.parent ! Loaded
     }
@@ -48,7 +48,7 @@ class DirectoryLoader(workspaceRoot: File) extends Actor with ActorLogging {
   def extractClassName(file: File, rootDirectory: File): String = {
     file.getAbsolutePath
         .replace(rootDirectory.getAbsolutePath, "")
-        .replace("\\", ".")
+        .replace(File.separator, ".")
         .replace(".class", "").substring(1)
   }
 }

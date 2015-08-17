@@ -14,7 +14,7 @@ class JarLoader extends Actor with ActorLogging {
 
   val uuid = java.util.UUID.randomUUID toString
 
-  val temporaryStorage: File = new File(System.getProperty("java.io.tmpdir"), "protobuf/" + uuid)
+  val temporaryStorage: File = new File(System.getProperty("java.io.tmpdir"), "protobuf"+File.separator + uuid)
 
   override def receive: Receive = {
     case Load(file: File) =>
@@ -36,8 +36,7 @@ class JarLoader extends Actor with ActorLogging {
       .foreach
     { case (sources, packageLikePathInJar) => {
       val fileWithSources: File = new File(temporaryStorage, packageLikePathInJar)
-      Utils.createFileWithContent(fileWithSources, sources)
-    }
+      Utils.createFileWithContent(fileWithSources, sources)}
     }
 
     context.parent ! Put(temporaryStorage)
