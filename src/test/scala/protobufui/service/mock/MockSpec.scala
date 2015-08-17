@@ -15,7 +15,7 @@ class MockSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLike 
 
   def this() = this(ActorSystem("ReceiveActorSpec"))
 
-  val mockDefinition = MockDefinition(new InetSocketAddress("localhost", 8080), classOf[Person], (p: Person) => Person.getDefaultInstance)
+  val mockDefinition = MockDefinition(new InetSocketAddress("localhost", 12345), classOf[Person], (p: Person) => Person.getDefaultInstance)
 
   "Mock" should {
     "spawn TcpBond and Responder on start" in {
@@ -31,7 +31,7 @@ class MockSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLike 
       val tcpBondProbe = TestProbe()
       val connection1 = TestProbe()
       val connection2 = TestProbe()
-      val address = new InetSocketAddress("localhost", 8080)
+      val address = new InetSocketAddress("localhost", 12346)
       val mock = TestActorRef(new Mock[Person, Person](mockDefinition))
       //when
       tcpBondProbe.send(mock, PeerConnected(connection1.ref, Connected(address, address)))

@@ -15,7 +15,7 @@ class TcpBondSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLi
   "TcpBond" should {
     "bind to given address on start" in {
       //given
-      val address = new InetSocketAddress("localhost", 8080)
+      val address = new InetSocketAddress("localhost", 12345)
       val ioTcpProbe = TestProbe()
       //when
       val bond = TestActorRef(new TcpBond(address) {
@@ -27,7 +27,7 @@ class TcpBondSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLi
 
     "forward Connected as PeerConected to parent" in {
       //given
-      val address = new InetSocketAddress("localhost", 8080)
+      val address = new InetSocketAddress("localhost", 12346)
       val ioTcpProbe = TestProbe()
       val parent = TestProbe()
       val connectedMsg = Connected(address, address)
@@ -42,7 +42,7 @@ class TcpBondSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLi
 
     "signal and stop when binding failed" in {
       //given
-      val address = new InetSocketAddress("localhost", 8080)
+      val address = new InetSocketAddress("localhost", 12347)
       val ioTcpProbe = TestProbe()
       val terminationProbe = TestProbe()
       //when
