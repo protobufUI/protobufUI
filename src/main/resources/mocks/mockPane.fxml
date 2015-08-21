@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="protobufui.gui.MockTabController">
+    <Label layoutX="14.0" layoutY="64.0" text="Port"/>
+    <TextField layoutX="73.0" layoutY="59.0" prefHeight="26.0" prefWidth="57.0"/>
+    <TextArea layoutX="16.0" layoutY="160.0" prefHeight="200.0" prefWidth="200.0"/>
+    <Label layoutX="16.0" layoutY="95.0" text="Response"/>
+    <ComboBox layoutX="16.0" layoutY="120.0" prefWidth="150.0"/>
+    <ToggleButton layoutX="509.0" layoutY="334.0" mnemonicParsing="false" text="Start"/>
+    <Label layoutX="16.0" layoutY="24.0" text="Name"/>
+    <TextField layoutX="73.0" layoutY="19.0"/>
+    <Button onAction="#save" layoutX="432.0" layoutY="334.0" mnemonicParsing="false" text="Save"/>
+</AnchorPane>

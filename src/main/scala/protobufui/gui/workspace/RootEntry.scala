@@ -7,10 +7,9 @@ import ipetoolkit.workspace.WorkspaceEntry
 
 import scala.xml.Elem
 
-/**
- * Created by krever on 8/14/15.
- */
 class RootEntry extends WorkspaceEntry {
+
+  import protobufui.gui.Main.eventBus
 
   val messages = new MessagesEntry
   val tests = new TestsEntry
@@ -26,5 +25,5 @@ class RootEntry extends WorkspaceEntry {
 
   override val detailsOpener: Option[Message] = None
 
-  override def toString: String = "Root"
+  override def toString(): String = "Root"
 }

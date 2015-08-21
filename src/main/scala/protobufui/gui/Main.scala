@@ -6,7 +6,7 @@ import javafx.scene.{Parent, Scene}
 import javafx.stage.Stage
 
 import akka.actor.ActorSystem
-import ipetoolkit.bus.IPEEventBus
+import ipetoolkit.bus.{ClassBasedEventBus, IPEEventBus}
 
 
 class Main extends Application {
@@ -31,7 +31,7 @@ class Main extends Application {
 object Main {
 
   val actorSystem: ActorSystem = ActorSystem("protobufUI")
-  implicit val eventBus = IPEEventBus
+  implicit val eventBus: ClassBasedEventBus = IPEEventBus
 
   def main(args: Array[String]): Unit = {
     Application.launch(classOf[Main], args: _*)
