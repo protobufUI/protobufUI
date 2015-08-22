@@ -7,18 +7,25 @@ import javafx.scene.control.ContextMenu
 import ipetoolkit.details.DetailsManagement.ShowDetails
 import ipetoolkit.util.Message
 import ipetoolkit.workspace.WorkspaceEntry
+import protobufui.gui.MockTabController
 
 import scala.xml.Elem
 
 
-class MockEntry(name: String) extends WorkspaceEntry {
-  override def uid: String = name
+class MockEntry extends WorkspaceEntry {
+  nameProperty.setValue("New mock")
 
   override def toXml: Option[Elem] = ???
 
   override def contextMenu: Option[ContextMenu] = None
 
-  override def detailsOpener: Option[Message] = Some(ShowDetails(name, loadMockPane))
+  override val detailsOpener: Option[Message] = Some(ShowDetails(this, loadMockPane))
 
-  def loadMockPane: Node = FXMLLoader.load(getClass.getResource("/mocks/mockPane.fxml"))
+  def loadMockPane: Node = {
+    val loader = new FXMLLoader(getClass.getResource("/mocks/mockPane.fxml"))
+    val pane = loader.load[Node]()
+    val controller = loader.getController[MockTabController]
+    controller.setWorkspaceEntry(this)
+    pane
+  }
 }

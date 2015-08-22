@@ -7,7 +7,8 @@ import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.{TabPane, TreeView}
 
 import ipetoolkit.details.DetailsTabPaneManager
-import ipetoolkit.workspace.{NewWorkspace, WorkspaceEntry, WorkspaceManager}
+import ipetoolkit.workspace.WorkspaceManagement.NewWorkspace
+import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceManager}
 import protobufui.gui.workspace.RootEntry
 
 
