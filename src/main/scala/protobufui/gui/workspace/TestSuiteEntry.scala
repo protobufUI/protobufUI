@@ -1,6 +1,6 @@
 package protobufui.gui.workspace
 
-import javafx.event.{EventHandler, ActionEvent}
+import javafx.event.{ActionEvent, EventHandler}
 import javafx.scene.control.{MenuItem, ContextMenu}
 
 import ipetoolkit.bus.ClassBasedEventBus
@@ -10,22 +10,21 @@ import ipetoolkit.workspace.WorkspaceManagement.AddWorkspaceEntry
 
 import scala.xml.Elem
 
-
-class TestsEntry(implicit eventBus: ClassBasedEventBus) extends WorkspaceEntry {
-  nameProperty.setValue("Tests")
+class TestSuiteEntry(implicit eventBus: ClassBasedEventBus) extends WorkspaceEntry {
+  nameProperty.setValue("Test Suite")
 
   override def toXml: Option[Elem] = ???
 
   override def contextMenu: Option[ContextMenu] = Some(createContextMenu)
 
   private def createContextMenu = {
-    val newTestSuite = new MenuItem("New Test Suite")
-    newTestSuite.setOnAction(new EventHandler[ActionEvent] {
+    val newTestCase = new MenuItem("New Test Case")
+    newTestCase.setOnAction(new EventHandler[ActionEvent] {
       override def handle(event: ActionEvent): Unit = {
-        eventBus.publish(AddWorkspaceEntry(new TestSuiteEntry, Some(uid)))
+        eventBus.publish(AddWorkspaceEntry(new TestCaseEntry, Some(uid)))
       }
     })
-    new ContextMenu(newTestSuite)
+    new ContextMenu(newTestCase)
   }
 
   override def detailsOpener: Option[Message] = None

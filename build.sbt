@@ -28,7 +28,7 @@ PB.protobufSettings
 fork := true
 fork in Test := true
 
-mainClass in(Compile, run) := Some("protobufui.gui.Application")
+mainClass in(Compile, run) := Some("protobufui.gui.Main")
 
 
 
