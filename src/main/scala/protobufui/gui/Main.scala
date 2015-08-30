@@ -16,6 +16,7 @@ class Main extends Application {
     val root: Parent = FXMLLoader.load(getClass.getResource("/fxml/main.fxml"))
     primaryStage.setTitle("protobufUI")
     primaryStage.setScene(new Scene(root, 800, 600))
+    primaryStage.getScene.getStylesheets.add("/css/ApplicationStyle.css")
     primaryStage.setOnCloseRequest(new EventHandler[WindowEvent] {
       override def handle(event: WindowEvent): Unit = {
         System.exit(0)

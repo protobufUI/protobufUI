@@ -1,3 +1,11 @@
 .menu {
     margin: auto;
 }
+
+#shadow {
+    -fx-background-color: darkgray;
+}
+
+#lightShadow {
+    -fx-background-color: lightgray;
+}

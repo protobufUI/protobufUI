@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane fx:controller="protobufui.gui.MainController" maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
-    <left>
-        <TreeView fx:id="workspaceTreeView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
-    </left>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/null"
+            fx:controller="protobufui.gui.MainController">
     <top>
-        <VBox BorderPane.alignment="CENTER">
+        <VBox>
             <MenuBar>
                 <Menu mnemonicParsing="false" text="File">
                     <MenuItem mnemonicParsing="false" text="Close"/>
@@ -28,7 +24,33 @@
         </VBox>
     </top>
     <center>
-        <TabPane fx:id="detailsTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
-                 BorderPane.alignment="CENTER"/>
+        <StackPane>
+            <HBox>
+                <TreeView fx:id="workspaceTreeView"/>
+                <TabPane fx:id="detailsTabPane" tabClosingPolicy="UNAVAILABLE"/>
+            </HBox>
+            <BorderPane StackPane.alignment="BOTTOM_CENTER" id="lightShadow" fx:id="expandingResultView"
+                        maxHeight="200">
+                <center>
+                    <TabPane fx:id="expandingTabPane">
+                        <Tab text="Test results" closable="false">
+                            <BorderPane>
+                                <ListView fx:id="testResultList"/>
+                            </BorderPane>
+                        </Tab>
+                    </TabPane>
+                </center>
+            </BorderPane>
+        </StackPane>
     </center>
+    <bottom>
+        <HBox fx:id="expandingBar" alignment="BASELINE_RIGHT" prefHeight="30">
+            <Label fx:id="expandingResultButton" text="Test results">
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </padding>
+            </Label>
+        </HBox>
+    </bottom>
 </BorderPane>
+
