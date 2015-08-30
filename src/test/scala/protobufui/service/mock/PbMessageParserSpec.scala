@@ -18,7 +18,7 @@ class PbMessageParserSpec(_system: ActorSystem) extends TestKit(_system) with Wo
         //give
         val connection = TestProbe()
         //when
-        val parser = TestActorRef(Props(new PbMessageParser[Person](classOf[Person], connection.ref)), self, "Parser1")
+        val parser = TestActorRef(Props(new PbMessageParser(classOf[Person], connection.ref)), self, "Parser1")
         //then
         connection.expectMsg(Register(parser))
       }
@@ -27,7 +27,7 @@ class PbMessageParserSpec(_system: ActorSystem) extends TestKit(_system) with Wo
         //given
         val person: Person = Person.newBuilder().setName("Jan").setEmail("j@k.pl").setId(1).build()
         val connection = TestProbe()
-        val parser = TestActorRef(Props(new PbMessageParser[Person](classOf[Person], connection.ref)), self, "Parser2")
+        val parser = TestActorRef(Props(new PbMessageParser(classOf[Person], connection.ref)), self, "Parser2")
         val msg = Received(ByteString(person.toByteArray))
         //when
         parser ! msg
@@ -37,7 +37,7 @@ class PbMessageParserSpec(_system: ActorSystem) extends TestKit(_system) with Wo
       "ignore invalid data" in {
         //given
         val connection = TestProbe()
-        val parser = TestActorRef(Props(new PbMessageParser[Person](classOf[Person], connection.ref)), self, "Parser3")
+        val parser = TestActorRef(Props(new PbMessageParser(classOf[Person], connection.ref)), self, "Parser3")
         //when
         parser ! Received(ByteString(1,2,3,4,5))
         //then
@@ -46,7 +46,7 @@ class PbMessageParserSpec(_system: ActorSystem) extends TestKit(_system) with Wo
       "stop self on PeerClosed" in {
         //given
         val connection = TestProbe()
-        val parser = TestActorRef(Props(new PbMessageParser[Person](classOf[Person], connection.ref)), self, "Parser4")
+        val parser = TestActorRef(Props(new PbMessageParser(classOf[Person], connection.ref)), self, "Parser4")
         val probe = TestProbe()
         probe watch parser
         //when

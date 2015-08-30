@@ -5,4 +5,4 @@ import java.net.InetSocketAddress
 import com.google.protobuf.MessageLite
 
 
-case class MockDefinition[Req <: MessageLite, Res <: MessageLite](socketAddress: InetSocketAddress, reqClass: Class[Req], responseGen: Req => Res)
+case class MockDefinition(socketAddress: InetSocketAddress, requestClass: Class[_], responseGen: PartialFunction[MessageLite, MessageLite])

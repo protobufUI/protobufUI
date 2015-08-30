@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.io.Tcp.Write
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
 import akka.util.ByteString
-import com.google.protobuf.UnknownFieldSet
+import com.google.protobuf.{MessageLite, UnknownFieldSet}
 import org.mockito.Mockito
 import org.scalatest.{Matchers, WordSpecLike}
 import protobufui.service.mock.PbMessageResponder.Respond
@@ -22,9 +22,9 @@ class PbMessageResponderSpec(_system: ActorSystem) extends TestKit(_system) with
       //given
       val request = Person.newBuilder().setId(1).setName("request").build()
       val response = Person.newBuilder().setId(1).setName("response").build()
-      val responseGen = Mockito.mock(classOf[(Person) => Person])
+      val responseGen = Mockito.mock(classOf[PartialFunction[MessageLite, MessageLite]])
       Mockito.when(responseGen.apply(request)).thenReturn(response)
-      val responder = TestActorRef(new PbMessageResponder[Person, Person](responseGen))
+      val responder = TestActorRef(new PbMessageResponder(responseGen))
       val connection = TestProbe()
 
       //when
@@ -37,8 +37,8 @@ class PbMessageResponderSpec(_system: ActorSystem) extends TestKit(_system) with
 
     "ignore invalid messages" in {
       //given
-      val responseGen = Mockito.mock(classOf[(Person) => Person])
-      val responder = TestActorRef(new PbMessageResponder[Person, Person](responseGen))
+      val responseGen = Mockito.mock(classOf[PartialFunction[MessageLite, MessageLite]])
+      val responder = TestActorRef(new PbMessageResponder(responseGen))
       val connection = TestProbe()
 
       //when

@@ -28,7 +28,7 @@ object MessageListener extends App {
   val port = args(0).toInt
   val socketAddress = new InetSocketAddress("localhost", port)
 
-  val mockDef = MockDefinition[UnknownFieldSet, UnknownFieldSet](socketAddress, classOf[UnknownFieldSet], _ => UnknownFieldSet.getDefaultInstance)
+  val mockDef = MockDefinition(socketAddress, classOf[UnknownFieldSet], { case _ => UnknownFieldSet.getDefaultInstance })
 
   val actorSystem = ActorSystem("MessageListener")
 

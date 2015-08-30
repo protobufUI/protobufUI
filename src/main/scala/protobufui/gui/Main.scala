@@ -13,7 +13,7 @@ import ipetoolkit.bus.{ClassBasedEventBus, IPEEventBus}
 class Main extends Application {
 
   override def start(primaryStage: Stage): Unit = {
-    val root: Parent = FXMLLoader.load(getClass.getResource("/main.fxml"))
+    val root: Parent = FXMLLoader.load(getClass.getResource("/fxml/main.fxml"))
     primaryStage.setTitle("protobufUI")
     primaryStage.setScene(new Scene(root, 800, 600))
     primaryStage.setOnCloseRequest(new EventHandler[WindowEvent] {

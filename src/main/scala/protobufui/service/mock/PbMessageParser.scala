@@ -13,11 +13,12 @@ object PbMessageParser {
   case class Parsed(msg: MessageLite, fromConnection: ActorRef)
 }
 
-class PbMessageParser[T <: MessageLite](expectedMsgClass: Class[T], connection: ActorRef) extends Actor with ActorLogging {
+//TODO przerobic na MessageClass
+class PbMessageParser(expectedMsgClass: Class[_], connection: ActorRef) extends Actor with ActorLogging {
 
   import Tcp._
 
-  val msgParser: Parser[T] = expectedMsgClass.getMethod("getParserForType").invoke(expectedMsgClass.getMethod("getDefaultInstance").invoke(null)).asInstanceOf[Parser[T]]
+  val msgParser: Parser[_] = expectedMsgClass.getMethod("getParserForType").invoke(expectedMsgClass.getMethod("getDefaultInstance").invoke(null)).asInstanceOf[Parser[_]]
 
   connection ! Register(self)
 
@@ -25,7 +26,7 @@ class PbMessageParser[T <: MessageLite](expectedMsgClass: Class[T], connection: 
     case Received(data) =>
       val msg = Try(msgParser.parseFrom(data.toArray))
       msg match {
-        case Success(value) => context.parent ! Parsed(value, connection)
+        case Success(value) => context.parent ! Parsed(value.asInstanceOf[MessageLite], connection)
         case Failure(e) => log.error(e, "Message could not be parsed.")
       }
     case PeerClosed =>

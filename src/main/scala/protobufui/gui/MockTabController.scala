@@ -8,12 +8,15 @@ import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.{ComboBox, TextArea, TextField, ToggleButton}
 
 import akka.actor._
-import com.google.protobuf.UnknownFieldSet
+import com.google.protobuf.{TextFormat, UnknownFieldSet}
 import ipetoolkit.util.JavaFXDispatcher
 import protobufui.gui.MockTabController.{Start, Stop}
 import protobufui.gui.workspace.MockEntry
 import protobufui.service.mock.{Mock, MockDefinition}
+import protobufui.service.source.ClassesContainer
+import protobufui.service.source.ClassesContainer.MessageClass
 
+import scala.collection.JavaConverters._
 
 class MockTabController extends Initializable {
 
@@ -21,7 +24,7 @@ class MockTabController extends Initializable {
 
   @FXML var nameField: TextField = _
   @FXML var portField: TextField = _
-  @FXML var responseTypeCombo: ComboBox[Class[_]] = _
+  @FXML var responseTypeCombo: ComboBox[MessageClass] = _
   @FXML var responseTextArea: TextArea = _
   @FXML var startStopToggle: ToggleButton = _
 
@@ -38,6 +41,7 @@ class MockTabController extends Initializable {
         }
       }
     })
+    responseTypeCombo.getItems.setAll(ClassesContainer.getClasses.asJavaCollection) //TODO aktualizcja na biezaco z ClassContainerem
   }
 
 
@@ -49,8 +53,10 @@ class MockTabController extends Initializable {
 
   def createMockDefinition = {
     val port = portField.getText.toInt
-    val response = UnknownFieldSet.getDefaultInstance //responseTypeCombo.getValue.newInstance().asInstanceOf[MessageLite].getDefaultInstanceForType //TODO sparsowac text areae
-    MockDefinition[UnknownFieldSet, UnknownFieldSet](new InetSocketAddress(port), classOf[UnknownFieldSet], _ => response)
+    val responseBuilder = responseTypeCombo.getValue.getBuilder
+    TextFormat.getParser.merge(responseTextArea.getText, responseBuilder)
+    val response = responseBuilder.build()
+    MockDefinition(new InetSocketAddress(port), classOf[UnknownFieldSet], { case _ => response })
   }
 
 

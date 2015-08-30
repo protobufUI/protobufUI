@@ -15,13 +15,13 @@ class MockSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLike 
 
   def this() = this(ActorSystem("ReceiveActorSpec"))
 
-  val mockDefinition = MockDefinition(new InetSocketAddress("localhost", 12345), classOf[Person], (p: Person) => Person.getDefaultInstance)
+  val mockDefinition = MockDefinition(new InetSocketAddress("localhost", 12345), classOf[Person], { case (p: Person) => Person.getDefaultInstance })
 
   "Mock" should {
     "spawn TcpBond and Responder on start" in {
       //given
       //when
-      val mock = TestActorRef(new Mock[Person, Person](mockDefinition))
+      val mock = TestActorRef(new Mock(mockDefinition))
       //then
       mock.children.size should be(2)
     }
@@ -32,7 +32,7 @@ class MockSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLike 
       val connection1 = TestProbe()
       val connection2 = TestProbe()
       val address = new InetSocketAddress("localhost", 12346)
-      val mock = TestActorRef(new Mock[Person, Person](mockDefinition))
+      val mock = TestActorRef(new Mock(mockDefinition))
       //when
       tcpBondProbe.send(mock, PeerConnected(connection1.ref, Connected(address, address)))
       tcpBondProbe.send(mock, PeerConnected(connection2.ref, Connected(address, address)))
@@ -43,7 +43,7 @@ class MockSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLike 
     "forward parsed message to responder" in {
       //given
       val responderProbe = TestProbe()
-      val mock = TestActorRef(new Mock[Person, Person](mockDefinition) {
+      val mock = TestActorRef(new Mock(mockDefinition) {
         override val responder = responderProbe.ref
       })
       val parser = TestProbe()

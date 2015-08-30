@@ -7,13 +7,15 @@ import akka.io.Tcp._
 import akka.io.{IO, Tcp}
 import akka.util.ByteString
 import com.google.protobuf.MessageLite
-import protobufui.service.socket.TcpMessageSender.{SendMessage, TcpMessageSenderReady}
+import protobufui.service.socket.TcpMessageSender.{Response, SendMessage, TcpMessageSenderReady}
 
 object TcpMessageSender {
 
   case class SendMessage(message: MessageLite)
 
   case class TcpMessageSenderReady()
+
+  case class Response(byteString: ByteString)
 
 }
 
@@ -24,7 +26,7 @@ class TcpMessageSender(address: InetSocketAddress) extends Actor with ActorLoggi
   protected val ioTcp = IO(Tcp)
 
   override def preStart(): Unit = {
-    ioTcp ! Bind(self, address)
+    ioTcp ! Connect(address)
   }
 
   override def receive = {
@@ -36,17 +38,19 @@ class TcpMessageSender(address: InetSocketAddress) extends Actor with ActorLoggi
     }
       def ready(tcpSocket: ActorRef): Receive = {
         case SendMessage(message: MessageLite) =>
-          ioTcp ! Write(ByteString(message.toByteArray))
+          tcpSocket ! Write(ByteString(message.toByteArray))
         case CommandFailed(w: Write) =>
-          log.debug("Message sending failed")
+          log.warning("Message sending failed")
+        case Received(data) =>
+          parent ! Response(data)
         case _: ConnectionClosed =>
           context stop self
-        case _ =>
-          log.debug("Invalid message received, ignored");
+        case m =>
+          log.warning("Invalid message received, ignored.Msg: $m");
       }
 
-    case _ =>
-      log.debug("Invalid message, MessageSender not connected")
+    case m =>
+      log.warning(s"Invalid message, MessageSender not connected. Msg: $m")
   }
 
 }

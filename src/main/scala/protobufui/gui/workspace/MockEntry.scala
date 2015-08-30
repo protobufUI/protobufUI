@@ -22,7 +22,7 @@ class MockEntry extends WorkspaceEntry {
   override val detailsOpener: Option[Message] = Some(ShowDetails(this, loadMockPane))
 
   def loadMockPane: Node = {
-    val loader = new FXMLLoader(getClass.getResource("/mocks/mockPane.fxml"))
+    val loader = new FXMLLoader(getClass.getResource("/fxml/mockPane.fxml"))
     val pane = loader.load[Node]()
     val controller = loader.getController[MockTabController]
     controller.setWorkspaceEntry(this)
