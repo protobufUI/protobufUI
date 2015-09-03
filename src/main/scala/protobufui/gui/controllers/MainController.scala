@@ -1,6 +1,5 @@
-package protobufui.gui
+package protobufui.gui.controllers
 
-import java.io.File
 import java.net.URL
 import java.util.ResourceBundle
 import javafx.event.EventHandler
@@ -12,14 +11,15 @@ import javafx.scene.layout.{BorderPane, HBox, StackPane}
 
 import ipetoolkit.details.DetailsTabPaneManager
 import ipetoolkit.workspace.WorkspaceManagement.NewWorkspace
-import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceManager}
-import protobufui.gui.workspace.RootEntry
+import ipetoolkit.workspace.{WorkspaceEntryView, WorkspaceManager}
+import protobufui.gui.Main
+import protobufui.gui.workspace.base.Root
 
 
 class MainController extends Initializable {
 
   @FXML
-  var workspaceTreeView: TreeView[WorkspaceEntry] = _
+  var workspaceTreeView: TreeView[WorkspaceEntryView] = _
 
   @FXML
   var expandingResultButton: Label = _
@@ -34,12 +34,10 @@ class MainController extends Initializable {
   var detailsTabPane: TabPane = _
 
   override def initialize(location: URL, resources: ResourceBundle): Unit = {
-    workspaceTreeView.setShowRoot(false)
     import Main.eventBus
+    workspaceTreeView.setShowRoot(false)
     val wm = Main.actorSystem.actorOf(WorkspaceManager.props(workspaceTreeView))
-    val workspaceDir = new File(System.getProperty("user.home"), ".protobufUI")
-    wm ! NewWorkspace(workspaceDir.getAbsolutePath, new RootEntry) //TODO poprawic: 1) jawnie wywolane przez uzytkownika z podana sciezka 2) przez eventBus(teraz nie mozna bo kolejnosc inicjalizacji)
-
+    wm ! NewWorkspace("", (new Root).model)
     Main.actorSystem.actorOf(DetailsTabPaneManager.props(detailsTabPane))
     initExpandingResultView()
 

@@ -1,4 +1,4 @@
-package protobufui.gui
+package protobufui.gui.controllers
 
 import java.lang
 import java.net.{InetSocketAddress, URL}
@@ -10,8 +10,8 @@ import javafx.scene.control.{ComboBox, TextArea, TextField, ToggleButton}
 import akka.actor._
 import com.google.protobuf.{TextFormat, UnknownFieldSet}
 import ipetoolkit.util.JavaFXDispatcher
-import protobufui.gui.MockTabController.{Start, Stop}
-import protobufui.gui.workspace.MockEntry
+import protobufui.gui.Main
+import protobufui.gui.workspace.mock.MockView
 import protobufui.service.mock.{Mock, MockDefinition}
 import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
@@ -20,16 +20,13 @@ import scala.collection.JavaConverters._
 
 class MockTabController extends Initializable {
 
-  var workspaceEntry: MockEntry = _
-
+  val mockSupervisor = Main.actorSystem.actorOf(Props(new MockSupervisor).withDispatcher(JavaFXDispatcher.Id))
+  var workspaceEntry: MockView = _
   @FXML var nameField: TextField = _
   @FXML var portField: TextField = _
   @FXML var responseTypeCombo: ComboBox[MessageClass] = _
   @FXML var responseTextArea: TextArea = _
   @FXML var startStopToggle: ToggleButton = _
-
-  val mockSupervisor = Main.actorSystem.actorOf(Props(new MockSupervisor).withDispatcher(JavaFXDispatcher.Id))
-
 
   override def initialize(location: URL, resources: ResourceBundle): Unit = {
     startStopToggle.selectedProperty().addListener(new ChangeListener[lang.Boolean] {
@@ -59,6 +56,10 @@ class MockTabController extends Initializable {
     MockDefinition(new InetSocketAddress(port), classOf[UnknownFieldSet], { case _ => response })
   }
 
+  def setWorkspaceEntry(entry: MockView) = {
+    workspaceEntry = entry
+    nameField.textProperty().bindBidirectional(workspaceEntry.nameProperty)
+  }
 
   private class MockSupervisor extends Actor with ActorLogging {
 
@@ -86,11 +87,6 @@ class MockTabController extends Initializable {
         context.become(waitForStart)
     }
 
-  }
-
-  def setWorkspaceEntry(entry: MockEntry) = {
-    workspaceEntry = entry
-    nameField.textProperty().bindBidirectional(workspaceEntry.nameProperty)
   }
 }
 

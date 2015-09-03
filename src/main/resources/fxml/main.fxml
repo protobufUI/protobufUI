@@ -3,8 +3,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/null"
-            fx:controller="protobufui.gui.MainController">
+            fx:controller="protobufui.gui.controllers.MainController">
     <top>
         <VBox>
             <MenuBar>
@@ -18,8 +20,20 @@
                     <MenuItem mnemonicParsing="false" text="About"/>
                 </Menu>
             </MenuBar>
-            <ToolBar prefHeight="40.0" prefWidth="200.0">
+            <ToolBar>
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </padding>
                 <Button mnemonicParsing="false" text="Button"/>
+                <Button prefHeight="26" maxHeight="26">
+                    <graphic>
+                        <ImageView fitHeight="15" fitWidth="15">
+                            <image>
+                                <Image url="/img/run.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
             </ToolBar>
         </VBox>
     </top>

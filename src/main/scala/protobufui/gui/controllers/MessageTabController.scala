@@ -1,4 +1,4 @@
-package protobufui.gui
+package protobufui.gui.controllers
 
 import java.net.{InetSocketAddress, URL}
 import java.util.ResourceBundle
@@ -9,7 +9,8 @@ import akka.actor.{Actor, Props, Terminated}
 import akka.util.ByteString
 import com.google.protobuf.{Message, MessageLite, TextFormat}
 import ipetoolkit.util.JavaFXDispatcher
-import protobufui.gui.workspace.MessageEntry
+import protobufui.gui.Main
+import protobufui.service.message.MessageEntry
 import protobufui.service.socket.TcpMessageSender
 import protobufui.service.socket.TcpMessageSender._
 import protobufui.service.source.ClassesContainer

@@ -9,3 +9,7 @@
 #lightShadow {
     -fx-background-color: lightgray;
 }
+
+.run-button {
+    -fx-image: url('/img/run.png');
+}
