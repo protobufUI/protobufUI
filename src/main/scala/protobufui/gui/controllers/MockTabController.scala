@@ -1,19 +1,22 @@
 package protobufui.gui.controllers
 
-import java.lang
 import java.net.{InetSocketAddress, URL}
 import java.util.ResourceBundle
+import java.{lang, util}
 import javafx.beans.value.{ChangeListener, ObservableValue}
+import javafx.event.EventHandler
 import javafx.fxml.{FXML, Initializable}
-import javafx.scene.control.{ComboBox, TextArea, TextField, ToggleButton}
+import javafx.scene.control._
+import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination, KeyEvent}
 
 import akka.actor._
-import com.google.protobuf.{TextFormat, UnknownFieldSet}
+import com.google.protobuf.{MessageLite, UnknownFieldSet}
 import ipetoolkit.util.JavaFXDispatcher
 import protobufui.gui.Main
-import protobufui.gui.controllers.MockTabController.{Stop, Start}
+import protobufui.gui.controllers.MockTabController.{Start, Stop}
 import protobufui.gui.workspace.mock.MockView
 import protobufui.service.mock.{Mock, MockDefinition}
+import protobufui.service.script.ScalaScriptingCtx
 import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
 
@@ -22,12 +25,14 @@ import scala.collection.JavaConverters._
 class MockTabController extends Initializable {
 
   val mockSupervisor = Main.actorSystem.actorOf(Props(new MockSupervisor).withDispatcher(JavaFXDispatcher.Id))
+  val scriptCtx = new ScalaScriptingCtx
   var workspaceEntry: MockView = _
   @FXML var nameField: TextField = _
   @FXML var portField: TextField = _
   @FXML var responseTypeCombo: ComboBox[MessageClass] = _
   @FXML var responseTextArea: TextArea = _
   @FXML var startStopToggle: ToggleButton = _
+  @FXML var completionListView: ListView[String] = _
 
   override def initialize(location: URL, resources: ResourceBundle): Unit = {
     startStopToggle.selectedProperty().addListener(new ChangeListener[lang.Boolean] {
@@ -40,6 +45,28 @@ class MockTabController extends Initializable {
       }
     })
     responseTypeCombo.getItems.setAll(ClassesContainer.getClasses.asJavaCollection) //TODO aktualizcja na biezaco z ClassContainerem
+    responseTypeCombo.getSelectionModel.select(0)
+
+    val ctrlSpaceKeyComb = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN)
+    responseTextArea.setOnKeyPressed(new EventHandler[KeyEvent] {
+      override def handle(event: KeyEvent): Unit = {
+        if (ctrlSpaceKeyComb.`match`(event)) {
+          scriptCtx.engine.reset()
+          scriptCtx.engine.bind("request", UnknownFieldSet.getDefaultInstance)
+
+          val responseBuilder = responseTypeCombo.getSelectionModel.getSelectedItem.getBuilder
+          scriptCtx.engine.eval(s"import ${responseBuilder.getClass.getCanonicalName}")
+          val r = scriptCtx.engine.bind("response", responseBuilder.getClass.getCanonicalName, responseBuilder)
+
+          val x = scriptCtx.engine.get("response")
+          val lines = responseTextArea.getText.split("\n")
+          lines.take(lines.length - 1).foreach(scriptCtx.engine.interpret) //TODO we should check to the caret position not to the last line
+          var candidates = new util.ArrayList[CharSequence]()
+          val completion = scriptCtx.completion.complete(lines.takeRight(1).head, lines.takeRight(1).head.length, candidates)
+          completionListView.getItems.setAll(candidates.asScala.map(_.toString): _*)
+        }
+      }
+    })
   }
 
 
@@ -51,10 +78,21 @@ class MockTabController extends Initializable {
 
   def createMockDefinition = {
     val port = portField.getText.toInt
-    val responseBuilder = responseTypeCombo.getValue.getBuilder
-    TextFormat.getParser.merge(responseTextArea.getText, responseBuilder)
-    val response = responseBuilder.build()
-    MockDefinition(new InetSocketAddress(port), classOf[UnknownFieldSet], { case _ => response })
+    MockDefinition(new InetSocketAddress(port), classOf[UnknownFieldSet], requestToReponse)
+  }
+
+  def requestToReponse: PartialFunction[MessageLite, MessageLite] = {
+    val responseBuilder = responseTypeCombo.getSelectionModel.getSelectedItem.getBuilder
+    val lines = responseTextArea.getText.split("\n");
+    {
+      case request: UnknownFieldSet =>
+        val scripting = new ScalaScriptingCtx
+        scripting.engine.bind("request", request)
+        scripting.engine.eval(s"import ${responseBuilder.getClass.getCanonicalName}")
+        scripting.engine.bind("response", responseBuilder.getClass.getCanonicalName, responseBuilder)
+        lines.take(lines.length).foreach(scripting.engine.interpret)
+        scripting.engine.eval("response").asInstanceOf[MessageLite.Builder].build()
+    }
   }
 
   def setWorkspaceEntry(entry: MockView) = {

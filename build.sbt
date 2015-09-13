@@ -12,15 +12,21 @@ scalaVersion := "2.11.7"
 val ipeVersion = "0.1.6-SNAPSHOT"
 val akkaVersion = "2.3.11"
 
-libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-actor" % akkaVersion
-  , "org.scalatest" %% "scalatest" % "2.2.1" % "test"
-  , "org.mockito" % "mockito-core" % "2.0.3-beta" % "test"
-  , "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test"
-  , "com.google.protobuf" % "protobuf-java" % "3.0.0-alpha-3.1"
-  , "org.scala-lang" % "scala-reflect" % "2.11.7"
-  , "pl.codekratisti" %% "ipe-toolkit" % ipeVersion
-)
+libraryDependencies ++= {
+  val scalaV = scalaVersion.value
+  Seq(
+    "com.typesafe.akka" %% "akka-actor" % akkaVersion
+    , "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+    , "org.mockito" % "mockito-core" % "2.0.3-beta" % "test"
+    , "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test"
+    , "com.google.protobuf" % "protobuf-java" % "3.0.0-alpha-3.1"
+    , "pl.codekratisti" %% "ipe-toolkit" % "0.1.6-SNAPSHOT"
+    , "org.scala-lang" % "scala-compiler" % scalaV
+    , "org.scala-lang" % "scala-library" % scalaV
+    , "org.scala-lang" % "scala-reflect" % scalaV
+    , "jline" % "jline" % "2.13"
+  )
+}
 
 PB.protobufSettings
 
