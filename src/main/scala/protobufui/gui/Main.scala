@@ -1,6 +1,6 @@
 package protobufui.gui
 
-import javafx.application.Application
+import javafx.application.{Platform, Application}
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.{Parent, Scene}
@@ -19,7 +19,7 @@ class Main extends Application {
     primaryStage.getScene.getStylesheets.add("/css/ApplicationStyle.css")
     primaryStage.setOnCloseRequest(new EventHandler[WindowEvent] {
       override def handle(event: WindowEvent): Unit = {
-        System.exit(0)
+        Platform.exit()
       }
     })
     primaryStage.show()
