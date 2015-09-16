@@ -12,8 +12,6 @@ scalaVersion := "2.11.7"
 val ipeVersion = "0.1.6-SNAPSHOT"
 val akkaVersion = "2.3.11"
 
-resolvers += Resolver.mavenLocal
-
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % akkaVersion
   , "org.scalatest" %% "scalatest" % "2.2.1" % "test"
