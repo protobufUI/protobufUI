@@ -32,6 +32,7 @@ class DirectoryLoaderSpec(_system: ActorSystem) extends TestKit(_system) with Wo
        // assert
        f.parent.expectMsg(Loaded)
        Assertions.assert(ClassesContainer.exists(f.className))
+       val clazz = ClassesContainer.getInstanceOf(f.className)
      }
    }
 }

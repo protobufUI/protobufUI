@@ -1,40 +1,48 @@
 package protobufui.service.source
 
+import java.io.File
 import java.lang.reflect.Constructor
-import java.util.concurrent.ConcurrentHashMap
+import java.net.URLClassLoader
+import javafx.beans.{InvalidationListener, Observable}
+import javafx.collections.{FXCollections, ObservableMap}
 
-import _root_.test.PbTest
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType
 import com.google.protobuf.{Message, Parser}
 
 import scala.collection.JavaConverters._
 
 
-object ClassesContainer {
+object ClassesContainer extends Observable{
 
-  private val classes: ConcurrentHashMap[String, Class[_]] = new ConcurrentHashMap[String, Class[_]]()
-  classes.put(classOf[PbTest.Person].getName, classOf[PbTest.Person])
+  private val classes: ObservableMap[String, Class[_]] = FXCollections.observableHashMap[String,Class[_]]()
 
-  //FIXME
+  private var listeners: List[InvalidationListener] = List[InvalidationListener]()
+
+  override def removeListener(listener: InvalidationListener) = {listeners = listeners filterNot( l=>l.equals(listener))}
+
+  override def addListener(listener: InvalidationListener) = {listeners = listeners ::: List(listener)}
 
   def exists(clazzName: String): Boolean = classes.containsKey(clazzName)
 
-  def putClass(clazz: (String, Class[_])) = classes.put(clazz._1, clazz._2)
+  def putClass(clazz: (String, Class[_])) = {
+    classes.put(clazz._1, clazz._2)
+    listeners.foreach{listener=>listener.invalidated(this)}
+  }
 
   def getClass(clazzName: String): Class[_] = classes.get(clazzName)
 
   def getInstanceOf(clazzName: String): Any = {
-    val clazz: Class[_] = Class.forName(clazzName)
-    val constructor: Constructor[_] = clazz.getConstructor(classOf[String])
+    val clazz: Class[_] = classes.get(clazzName)
+    val constructor: Constructor[_] = clazz.getConstructor()
     constructor.newInstance()
   }
 
   def getClasses: Iterable[MessageClass] = {
     import scala.collection.JavaConverters._
-    classes.values().asScala.map(MessageClass)
+    classes.values().asScala
+      .filter(clazz => clazz.getMethods.filter(x=>x.getName.equals("getDefaultInstance")).length>0)
+      .map(MessageClass)
   }
-
-  //TODO Przydaloby sie cos co powiadomi o nowych klasach...(javafx property, observable list, albo cos takiego)
 
   case class MessageClass(clazz: Class[_]) {
     private val defaultInstance = clazz.getMethod("getDefaultInstance").invoke(null).asInstanceOf[Message]
@@ -47,17 +55,16 @@ object ClassesContainer {
 
     def getInstanceFilledWithDefaults = {
       val builder = defaultInstance.newBuilderForType()
-      MessageUtil.fillWithDefaults(builder).build()
+      builder.fillWithDefaults.build()
     }
   }
 
-  //TODO przeniesc stad
-  object MessageUtil {
-    def fillWithDefaults(builder: Message.Builder): Message.Builder = {
+  implicit class MessageUtil(builder: Message.Builder) {
+    def fillWithDefaults : Message.Builder = {
       builder.getDescriptorForType.getFields.asScala.foreach(field =>
         if (field.getJavaType == JavaType.MESSAGE) {
           val fieldBuilder = builder.getFieldBuilder(field)
-          builder.setField(field, fillWithDefaults(fieldBuilder).build())
+          builder.setField(field, fieldBuilder.fillWithDefaults.build())
         }
         else {
           field.getDefaultValue
@@ -67,5 +74,4 @@ object ClassesContainer {
       builder
     }
   }
-
 }

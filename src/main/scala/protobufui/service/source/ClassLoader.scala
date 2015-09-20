@@ -2,12 +2,13 @@ package protobufui.service.source
 
 import java.io.File
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{ActorRef, Actor, ActorLogging, Props}
 import protobufui.service.source.ClassesLoader._
 import protobufui.service.source.loaders._
 
 case class Load(file: File)
 case class Loaded()
+case class Reload()
 object ClassesLoader {
 
   /**
@@ -40,6 +41,8 @@ class ClassesLoader(workspaceRoot: File) extends Actor with ActorLogging {
       jarLoader ! Load(file)
     case Put(file) if file.getName.endsWith(".proto") =>
       protoLoader ! Load(file)
+    case Loaded =>
+      {}
     case _ =>
       throw new IllegalArgumentException("Do not know what to load")
   }

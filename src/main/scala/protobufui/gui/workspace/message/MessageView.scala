@@ -26,6 +26,7 @@ class MessageView(workspaceEntry: WorkspaceEntry, messageClass: MessageClass) ex
     val pane = loader.load[Node]()
     val controller = loader.getController[MessageTabController]
     controller.setWorkspaceEntry(this.model.asInstanceOf[MessageEntry])
+
     pane
   }
 

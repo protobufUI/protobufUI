@@ -3,10 +3,11 @@ package protobufui.gui.controllers
 import java.net.{InetSocketAddress, URL}
 import java.util.ResourceBundle
 import java.{lang, util}
+import javafx.beans.{InvalidationListener, Observable}
 import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.event.EventHandler
 import javafx.fxml.{FXML, Initializable}
-import javafx.scene.control._
+import javafx.scene.control.{ComboBox, TextArea, TextField, ToggleButton, _}
 import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination, KeyEvent}
 
 import akka.actor._
@@ -21,8 +22,7 @@ import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
 
 import scala.collection.JavaConverters._
-
-class MockTabController extends Initializable {
+class MockTabController extends Initializable with InvalidationListener {
 
   val mockSupervisor = Main.actorSystem.actorOf(Props(new MockSupervisor).withDispatcher(JavaFXDispatcher.Id))
   val scriptCtx = new ScalaScriptingCtx
@@ -44,7 +44,6 @@ class MockTabController extends Initializable {
         }
       }
     })
-    responseTypeCombo.getItems.setAll(ClassesContainer.getClasses.asJavaCollection) //TODO aktualizcja na biezaco z ClassContainerem
     responseTypeCombo.getSelectionModel.select(0)
 
     val ctrlSpaceKeyComb = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN)
@@ -67,8 +66,18 @@ class MockTabController extends Initializable {
         }
       }
     })
+    ClassesContainer.addListener(this)
+    synchronizeWithClassContainer
   }
 
+
+  override def invalidated(observable: Observable)={
+    synchronizeWithClassContainer
+  }
+
+  def synchronizeWithClassContainer: Unit = {
+    responseTypeCombo.getItems.setAll(ClassesContainer.getClasses.asJavaCollection)
+  }
 
   def disableMockDefControls(value: Boolean) = {
     portField.setDisable(value)
