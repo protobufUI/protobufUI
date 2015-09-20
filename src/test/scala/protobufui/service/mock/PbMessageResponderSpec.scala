@@ -24,6 +24,7 @@ class PbMessageResponderSpec(_system: ActorSystem) extends TestKit(_system) with
       val response = Person.newBuilder().setId(1).setName("response").build()
       val responseGen = Mockito.mock(classOf[PartialFunction[MessageLite, MessageLite]])
       Mockito.when(responseGen.apply(request)).thenReturn(response)
+      Mockito.when(responseGen.isDefinedAt(request)).thenReturn(true)
       val responder = TestActorRef(new PbMessageResponder(responseGen))
       val connection = TestProbe()
 
@@ -31,21 +32,23 @@ class PbMessageResponderSpec(_system: ActorSystem) extends TestKit(_system) with
       responder ! Respond(request, connection.ref)
 
       //then
+      Mockito.verify(responseGen).isDefinedAt(request)
       Mockito.verify(responseGen).apply(request)
       connection.expectMsg(Write(ByteString(response.toByteArray)))
     }
 
     "ignore invalid messages" in {
       //given
-      val responseGen = Mockito.mock(classOf[PartialFunction[MessageLite, MessageLite]])
-      val responder = TestActorRef(new PbMessageResponder(responseGen))
       val connection = TestProbe()
-
+      val responseGen = Mockito.mock(classOf[PartialFunction[MessageLite, MessageLite]])
+      val request = UnknownFieldSet.getDefaultInstance
+      val responder = TestActorRef(new PbMessageResponder(responseGen))
+      Mockito.when(responseGen.isDefinedAt(request)).thenReturn(true)
       //when
-      responder ! Respond(UnknownFieldSet.getDefaultInstance, connection.ref)
+      responder ! Respond(request, connection.ref)
 
       //then
-      Mockito.verifyZeroInteractions(responseGen)
+      Mockito.verify(responseGen).isDefinedAt(request)
       connection.expectNoMsg()
     }
 
