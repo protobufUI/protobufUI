@@ -17,7 +17,7 @@ class MockSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLike 
 
   def this() = this(ActorSystem("ReceiveActorSpec"))
 
-  val mockDefinition = MockDefinition(new InetSocketAddress("localhost", 49152+Random.nextInt(65535-49152)), classOf[Person], { case (p: Person) => Person.getDefaultInstance })
+  def mockDefinition = MockDefinition(new InetSocketAddress("localhost", 49152+Random.nextInt(65535-49152)), classOf[Person], { case (p: Person) => Person.getDefaultInstance })
 
   "Mock" should {
     "spawn TcpBond and Responder on start" in {
