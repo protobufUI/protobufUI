@@ -11,11 +11,13 @@ import protobufui.service.mock.PbMessageResponder.Respond
 import protobufui.service.socket.TcpBond.PeerConnected
 import test.PbTest.Person
 
+import scala.util.Random
+
 class MockSpec(_system: ActorSystem) extends TestKit(_system) with WordSpecLike with Matchers with ImplicitSender {
 
   def this() = this(ActorSystem("ReceiveActorSpec"))
 
-  val mockDefinition = MockDefinition(new InetSocketAddress("localhost", 12345), classOf[Person], { case (p: Person) => Person.getDefaultInstance })
+  val mockDefinition = MockDefinition(new InetSocketAddress("localhost", 49152+Random.nextInt(65535-49152)), classOf[Person], { case (p: Person) => Person.getDefaultInstance })
 
   "Mock" should {
     "spawn TcpBond and Responder on start" in {
