@@ -7,6 +7,7 @@ import javafx.event.{ActionEvent, EventHandler}
 import javafx.scene.control.{ContextMenu, MenuItem}
 import javafx.stage.FileChooser
 import javafx.stage.FileChooser.ExtensionFilter
+import javax.xml.bind.annotation.XmlRootElement
 
 import akka.actor.Props
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
@@ -19,13 +20,17 @@ import protobufui.service.source.{ClassesContainer, ClassesLoader}
 import scala.collection.JavaConverters._
 import scala.language.implicitConversions
 
-class MessageRoot() extends WorkspaceEntryView with InvalidationListener{
+
+@XmlRootElement
+class MessagesRootEntry extends WorkspaceEntry {
+  override val view: WorkspaceEntryView = new MessagesRootView(this)
+}
+
+class MessagesRootView(val model: WorkspaceEntry) extends WorkspaceEntryView with InvalidationListener {
   private val workspaceRoot: File = new File(Globals.getProperty("workspace.root").get)
   val classesLoader = Main.actorSystem.actorOf(Props(new ClassesLoader(workspaceRoot)))
 
   override val nameProperty: StringProperty = new SimpleStringProperty("Messages")
-
-  override def model: WorkspaceEntry = new DummyModel(this)
 
   ClassesContainer.addListener(this)
   override def invalidated(observable: Observable): Unit = {

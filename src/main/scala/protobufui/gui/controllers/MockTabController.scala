@@ -11,7 +11,7 @@ import javafx.scene.control._
 import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination, KeyEvent}
 
 import akka.actor._
-import com.google.protobuf.{MessageLite, UnknownFieldSet}
+import com.google.protobuf.{MessageLite, TextFormat, UnknownFieldSet}
 import ipetoolkit.util.JavaFXDispatcher
 import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
 import protobufui.gui.Main
@@ -49,8 +49,6 @@ class MockTabController extends Initializable with InvalidationListener with Det
         }
       }
     })
-    responseClassCombo.getItems.setAll(ClassesContainer.getClasses.asJavaCollection) //TODO aktualizcja na biezaco z ClassContainerem
-    responseClassCombo.getSelectionModel.select(0)
 
     val ctrlSpaceKeyComb = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN)
     responseTextArea.setOnKeyPressed(new EventHandler[KeyEvent] {
@@ -62,6 +60,7 @@ class MockTabController extends Initializable with InvalidationListener with Det
     })
     ClassesContainer.addListener(this)
     synchronizeWithClassContainer()
+    responseClassCombo.getSelectionModel.select(0)
   }
 
 
@@ -91,7 +90,7 @@ class MockTabController extends Initializable with InvalidationListener with Det
   def parseResponseScript: PartialFunction[MessageLite, MessageLite] = {
     val responseBuilder = responseClassCombo.getSelectionModel.getSelectedItem.getBuilder
     val lines = responseTextArea.getText.split("\n")
-    val result = {
+    val result: PartialFunction[MessageLite, MessageLite] = {
       case request: UnknownFieldSet =>
         val scripting = new ScalaScriptingCtx
         scripting.engine.bind("request", request)
@@ -103,7 +102,16 @@ class MockTabController extends Initializable with InvalidationListener with Det
     result
   }
 
-  def parseResponseLiteral(): PartialFunction[MessageLite, MessageLite] = ??? //TODO
+  def parseResponseLiteral(): PartialFunction[MessageLite, MessageLite] = {
+    val responseBuilder = responseClassCombo.getValue.getBuilder
+    TextFormat.getParser.merge(responseTextArea.getText, responseBuilder)
+    val response = responseBuilder.build()
+    val result: PartialFunction[MessageLite, MessageLite] = {
+      case request: UnknownFieldSet =>
+        response
+    }
+    result
+  }
 
   def setWorkspaceEntry(entry: MockView) = {
 

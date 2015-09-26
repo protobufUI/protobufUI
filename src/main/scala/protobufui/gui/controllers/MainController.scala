@@ -1,5 +1,6 @@
 package protobufui.gui.controllers
 
+import java.io.File
 import java.net.URL
 import java.util.ResourceBundle
 import javafx.event.EventHandler
@@ -12,8 +13,9 @@ import javafx.scene.layout.{BorderPane, HBox, StackPane}
 import ipetoolkit.details.DetailsTabPaneManager
 import ipetoolkit.workspace.WorkspaceManagement.NewWorkspace
 import ipetoolkit.workspace.{WorkspaceEntryView, WorkspaceManager}
+import protobufui.Globals
 import protobufui.gui.Main
-import protobufui.gui.workspace.base.Root
+import protobufui.gui.workspace.base.RootEntry
 
 
 class MainController extends Initializable {
@@ -37,7 +39,7 @@ class MainController extends Initializable {
     import Main.eventBus
     workspaceTreeView.setShowRoot(false)
     val wm = Main.actorSystem.actorOf(WorkspaceManager.props(workspaceTreeView))
-    wm ! NewWorkspace("", (new Root).model)
+    wm ! NewWorkspace(Globals.getProperty("workspace.root").get + File.separator + "workspace.xml", RootEntry.createRootEntryWithSubRoots())
     Main.actorSystem.actorOf(DetailsTabPaneManager.props(detailsTabPane))
     initExpandingResultView()
 

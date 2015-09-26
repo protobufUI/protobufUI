@@ -9,7 +9,7 @@
     <TextField fx:id="portField" layoutX="73.0" layoutY="59.0" prefHeight="26.0" prefWidth="57.0"/>
     <TextArea fx:id="responseTextArea" layoutX="14.0" layoutY="224.0" prefHeight="200.0" prefWidth="322.0"/>
     <Label layoutX="16.0" layoutY="95.0" text="Response"/>
-    <ComboBox fx:id="responseTypeCombo" layoutX="16.0" layoutY="120.0" prefWidth="150.0"/>
+    <ComboBox fx:id="responseClassCombo" layoutX="16.0" layoutY="120.0" prefWidth="150.0"/>
     <ToggleButton fx:id="startStopToggle" layoutX="509.0" layoutY="398.0" mnemonicParsing="false" text="Start"/>
     <Label layoutX="16.0" layoutY="24.0" text="Name"/>
     <TextField fx:id="nameField" layoutX="73.0" layoutY="19.0"/>
