@@ -31,10 +31,13 @@ class MockTabController extends Initializable with InvalidationListener with Det
   var workspaceEntry: MockEntry = _
   @FXML var nameField: TextField = _
   @FXML var portField: TextField = _
-  @FXML var responseTypeCombo: ComboBox[MessageClass] = _
+  @FXML var responseClassCombo: ComboBox[MessageClass] = _
   @FXML var responseTextArea: TextArea = _
   @FXML var startStopToggle: ToggleButton = _
   @FXML var completionListView: ListView[String] = _
+  @FXML var literalResponseRadio: RadioButton = _
+  @FXML var scriptResponseRadio: RadioButton = _
+  
 
   override def initialize(location: URL, resources: ResourceBundle): Unit = {
     startStopToggle.selectedProperty().addListener(new ChangeListener[lang.Boolean] {
@@ -46,57 +49,49 @@ class MockTabController extends Initializable with InvalidationListener with Det
         }
       }
     })
-    responseTypeCombo.getItems.setAll(ClassesContainer.getClasses.asJavaCollection) //TODO aktualizcja na biezaco z ClassContainerem
-    responseTypeCombo.getSelectionModel.select(0)
+    responseClassCombo.getItems.setAll(ClassesContainer.getClasses.asJavaCollection) //TODO aktualizcja na biezaco z ClassContainerem
+    responseClassCombo.getSelectionModel.select(0)
 
     val ctrlSpaceKeyComb = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN)
     responseTextArea.setOnKeyPressed(new EventHandler[KeyEvent] {
       override def handle(event: KeyEvent): Unit = {
-        if (ctrlSpaceKeyComb.`match`(event)) {
-          scriptCtx.engine.reset()
-          scriptCtx.engine.bind("request", UnknownFieldSet.getDefaultInstance)
-
-          val responseBuilder = responseTypeCombo.getSelectionModel.getSelectedItem.getBuilder
-          scriptCtx.engine.eval(s"import ${responseBuilder.getClass.getCanonicalName}")
-          val r = scriptCtx.engine.bind("response", responseBuilder.getClass.getCanonicalName, responseBuilder)
-
-          val x = scriptCtx.engine.get("response")
-          val lines = responseTextArea.getText.split("\n")
-          lines.take(lines.length - 1).foreach(scriptCtx.engine.interpret) //TODO we should check to the caret position not to the last line
-          var candidates = new util.ArrayList[CharSequence]()
-          val completion = scriptCtx.completion.complete(lines.takeRight(1).head, lines.takeRight(1).head.length, candidates)
-          completionListView.getItems.setAll(candidates.asScala.map(_.toString): _*)
+        if (ctrlSpaceKeyComb.`match`(event) && scriptResponseRadio.isSelected) {
+          completeResponseScript()
         }
       }
     })
     ClassesContainer.addListener(this)
-    synchronizeWithClassContainer
+    synchronizeWithClassContainer()
   }
 
 
   override def invalidated(observable: Observable)={
-    synchronizeWithClassContainer
+    synchronizeWithClassContainer()
   }
 
-  def synchronizeWithClassContainer: Unit = {
-    responseTypeCombo.getItems.setAll(ClassesContainer.getClasses.asJavaCollection)
+  def synchronizeWithClassContainer(): Unit = {
+    responseClassCombo.getItems.setAll(ClassesContainer.getClasses.asJavaCollection)
   }
 
   def disableMockDefControls(value: Boolean) = {
     portField.setDisable(value)
-    responseTypeCombo.setDisable(value)
+    responseClassCombo.setDisable(value)
     responseTextArea.setDisable(value)
+    completionListView.setDisable(value)
+    literalResponseRadio.setDisable(value)
+    scriptResponseRadio.setDisable(value)
   }
 
   def createMockDefinition = {
     val port = portField.getText.toInt
-    MockDefinition(new InetSocketAddress(port), classOf[UnknownFieldSet], requestToReponse)
+    val responseGen = if (literalResponseRadio.isSelected) parseResponseLiteral() else if (scriptResponseRadio.isSelected) parseResponseScript else throw new UnsupportedOperationException
+    MockDefinition(new InetSocketAddress(port), classOf[UnknownFieldSet], responseGen)
   }
 
-  def requestToReponse: PartialFunction[MessageLite, MessageLite] = {
-    val responseBuilder = responseTypeCombo.getSelectionModel.getSelectedItem.getBuilder
-    val lines = responseTextArea.getText.split("\n");
-    {
+  def parseResponseScript: PartialFunction[MessageLite, MessageLite] = {
+    val responseBuilder = responseClassCombo.getSelectionModel.getSelectedItem.getBuilder
+    val lines = responseTextArea.getText.split("\n")
+    val result = {
       case request: UnknownFieldSet =>
         val scripting = new ScalaScriptingCtx
         scripting.engine.bind("request", request)
@@ -105,11 +100,31 @@ class MockTabController extends Initializable with InvalidationListener with Det
         lines.take(lines.length).foreach(scripting.engine.interpret)
         scripting.engine.eval("response").asInstanceOf[MessageLite.Builder].build()
     }
+    result
   }
+
+  def parseResponseLiteral(): PartialFunction[MessageLite, MessageLite] = ??? //TODO
 
   def setWorkspaceEntry(entry: MockView) = {
 
     nameField.textProperty().bindBidirectional(workspaceEntry.view.nameProperty)
+  }
+
+
+  private def completeResponseScript(): Unit = {
+    scriptCtx.engine.reset()
+    scriptCtx.engine.bind("request", UnknownFieldSet.getDefaultInstance)
+
+    val responseBuilder = responseClassCombo.getSelectionModel.getSelectedItem.getBuilder
+    scriptCtx.engine.eval(s"import ${responseBuilder.getClass.getCanonicalName}")
+    scriptCtx.engine.bind("response", responseBuilder.getClass.getCanonicalName, responseBuilder)
+
+    scriptCtx.engine.get("response")
+    val lines = responseTextArea.getText.split("\n")
+    lines.take(lines.length - 1).foreach(scriptCtx.engine.interpret) //TODO we should check to the caret position not to the last line
+    val candidates = new util.ArrayList[CharSequence]()
+    scriptCtx.completion.complete(lines.takeRight(1).head, lines.takeRight(1).head.length, candidates)
+    completionListView.getItems.setAll(candidates.asScala.map(_.toString): _*)
   }
 
   private class MockSupervisor extends Actor with ActorLogging {
