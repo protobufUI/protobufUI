@@ -2,9 +2,10 @@ package protobufui.service.test
 
 import ipetoolkit.workspace.WorkspaceEntry
 import protobufui.gui.workspace.test.TestStepView
+import protobufui.test.TestStepType.TestStepType
 
-class TestStep(testStepType: TestStepType.Value) extends WorkspaceEntry {
-  override val view = new TestStepView(this, testStepType.toString)
+class TestStep(testStepType: TestStepType) extends WorkspaceEntry {
+  override val view = new TestStepView(this, testStepType)
 }
 
 object TestStepType extends Enumeration {
