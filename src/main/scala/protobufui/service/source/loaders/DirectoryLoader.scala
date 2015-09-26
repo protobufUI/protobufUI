@@ -12,15 +12,16 @@ class DirectoryLoader(workspaceRoot: File) extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case Load(directory: File) => {
-      Utils.getFileTree(directory)
+      val classFiles = Utils.getFileTree(directory)
         .filter(file => file.getName.endsWith(".java"))
         .map(Utils.compile)
         .flatMap(getClassFiles(_))
         .map(file => {
         copyToWorkspace(file,directory)
         extractClassName(file,directory)
-      })
-        .foreach(classLoader.loadAndStore(_))
+      }).toList
+
+        classFiles.foreach(classLoader.loadAndStore(_))
 
         context.parent ! Loaded
     }

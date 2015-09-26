@@ -24,7 +24,8 @@ object Utils {
     else Stream.empty)
 }
 class ClassLoader(rootFile:File){
-  val urlClassLoader = URLClassLoader.newInstance(Array(rootFile.toURI.toURL))
+  private val rootFileUrl = rootFile.toURI.toURL
+  val urlClassLoader = URLClassLoader.newInstance(Array(rootFileUrl))
   def loadAndStore(className: String) = {
     val clazz: Class[_] =  urlClassLoader.loadClass(className)
     ClassesContainer.putClass(className, clazz)

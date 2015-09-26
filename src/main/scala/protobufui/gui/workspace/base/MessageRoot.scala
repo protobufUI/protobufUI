@@ -11,6 +11,7 @@ import javafx.stage.FileChooser.ExtensionFilter
 import akka.actor.Props
 import ipetoolkit.util.Message
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
+import protobufui.Globals
 import protobufui.gui.Main
 import protobufui.service.message.MessageEntry
 import protobufui.service.source.ClassesContainer.MessageClass
@@ -21,8 +22,8 @@ import scala.collection.JavaConverters._
 import scala.language.implicitConversions
 
 class MessageRoot() extends WorkspaceEntryView with InvalidationListener{
-  //fixme : take file from context
-  val classesLoader = Main.actorSystem.actorOf(Props(new ClassesLoader(new File("C:/test"))))
+  private val workspaceRoot: File = new File(Globals.getProperty("workspace.root").get)
+  val classesLoader = Main.actorSystem.actorOf(Props(new ClassesLoader(workspaceRoot)))
 
   override val nameProperty: StringProperty = new SimpleStringProperty("Messages")
 
@@ -30,7 +31,9 @@ class MessageRoot() extends WorkspaceEntryView with InvalidationListener{
 
   ClassesContainer.addListener(this)
   override def invalidated(observable: Observable): Unit = {
-    ClassesContainer.getClasses.foreach { x => addWorkSpaceEntry(new MessageEntry(x))}
+    ClassesContainer.getClasses.foreach { x => addWorkSpaceEntry(new MessageEntry(x){
+      override def uuid = x.getClass.getName
+    })}
   }
 
   override def contextMenu: Option[ContextMenu] = {
@@ -39,7 +42,7 @@ class MessageRoot() extends WorkspaceEntryView with InvalidationListener{
       override def handle(event: ActionEvent): Unit = {
         val fileChooser:FileChooser = new FileChooser()
         fileChooser.setTitle("Open Resource Dialog")
-        fileChooser.setInitialDirectory(new File("."))
+        fileChooser.setInitialDirectory(new File("..\\src\\test\\resources\\protobufui\\service\\source"))
         fileChooser.setSelectedExtensionFilter(new ExtensionFilter("Select .proto or .jar file", "proto", "jar"))
         val files = fileChooser.showOpenMultipleDialog(null)
         files.asScala.foreach{classesLoader ! Put(_)}
