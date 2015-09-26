@@ -9,6 +9,7 @@ import akka.actor.{Actor, Props, Terminated}
 import akka.util.ByteString
 import com.google.protobuf.{Message, MessageLite, TextFormat}
 import ipetoolkit.util.JavaFXDispatcher
+import ipetoolkit.workspace.{WorkspaceEntry, DetailsController}
 import protobufui.gui.Main
 import protobufui.service.message.MessageEntry
 import protobufui.service.socket.TcpMessageSender
@@ -19,7 +20,7 @@ import protobufui.service.source.ClassesContainer.MessageClass
 import scala.util.Try
 
 
-class MessageTabController extends Initializable {
+class MessageTabController extends Initializable with DetailsController {
 
   @FXML var hostnameField: TextField = _
   @FXML var portField: TextField = _
@@ -76,4 +77,7 @@ class MessageTabController extends Initializable {
 
   }
 
+  override def setModel(workspaceEntry: WorkspaceEntry): Unit = {
+
+  }
 }
