@@ -25,9 +25,8 @@ object Utils {
 }
 class ClassLoader(rootFile:File){
   val urlClassLoader = URLClassLoader.newInstance(Array(rootFile.toURI.toURL))
-  def loadAndStore(className: String): Class[_] = {
+  def loadAndStore(className: String) = {
     val clazz: Class[_] =  urlClassLoader.loadClass(className)
     ClassesContainer.putClass(className, clazz)
-    Class.forName(className, true, urlClassLoader)
   }
 }

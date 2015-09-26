@@ -7,14 +7,14 @@ import javafx.beans.{InvalidationListener, Observable}
 import javafx.collections.{FXCollections, ObservableMap}
 
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType
-import com.google.protobuf.{Message, Parser}
+import com.google.protobuf.{MessageLite, Message, Parser}
 
 import scala.collection.JavaConverters._
 
 
 object ClassesContainer extends Observable{
 
-  private val classes: ObservableMap[String, Class[_]] = FXCollections.observableHashMap[String,Class[_]]()
+  private val classes: ObservableMap[String, MessageClass] = FXCollections.observableHashMap[String,MessageClass]()
 
   private var listeners: List[InvalidationListener] = List[InvalidationListener]()
 
@@ -25,23 +25,22 @@ object ClassesContainer extends Observable{
   def exists(clazzName: String): Boolean = classes.containsKey(clazzName)
 
   def putClass(clazz: (String, Class[_])) = {
-    classes.put(clazz._1, clazz._2)
-    listeners.foreach{listener=>listener.invalidated(this)}
+    if(classOf[MessageLite].isAssignableFrom(clazz._2)) {
+      classes.put(clazz._1, new MessageClass(clazz._2))
+      listeners.foreach { listener => listener.invalidated(this) }
+    }
   }
 
-  def getClass(clazzName: String): Class[_] = classes.get(clazzName)
+  def getClass(clazzName: String): MessageClass = classes.get(clazzName)
 
   def getInstanceOf(clazzName: String): Any = {
-    val clazz: Class[_] = classes.get(clazzName)
-    val constructor: Constructor[_] = clazz.getConstructor()
-    constructor.newInstance()
+    val clazz: MessageClass = classes.get(clazzName)
+    clazz.newInstance
   }
 
   def getClasses: Iterable[MessageClass] = {
     import scala.collection.JavaConverters._
     classes.values().asScala
-      .filter(clazz => clazz.getMethods.filter(x=>x.getName.equals("getDefaultInstance")).length>0)
-      .map(MessageClass)
   }
 
   case class MessageClass(clazz: Class[_]) {
