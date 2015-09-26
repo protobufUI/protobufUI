@@ -9,7 +9,7 @@ import javafx.scene.control._
 import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
 import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
-import protobufui.test.SendMessageStep
+import protobufui.test.step.SendMessageStep
 
 /**
  * Created by humblehound on 26.09.15.

@@ -1,4 +1,4 @@
-package protobufui.test
+package protobufui.test.step
 
 import com.google.protobuf.Message
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
@@ -15,7 +15,7 @@ class SendMessageStep() extends WorkspaceEntry{
   var messageClass: MessageClass = _
   var message: Message = _
 
-  override val view: WorkspaceEntryView = new TestStepView(this, TestStepType.SendMessage)
+  override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepMessage.fxml")
 
 }
 

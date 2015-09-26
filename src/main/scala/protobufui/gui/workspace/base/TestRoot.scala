@@ -5,7 +5,7 @@ import javafx.event.{ActionEvent, EventHandler}
 import javafx.scene.control.{ContextMenu, MenuItem}
 
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
-import protobufui.service.test.TestSuite
+import protobufui.test.TestSuite
 
 class TestRoot extends WorkspaceEntryView {
 

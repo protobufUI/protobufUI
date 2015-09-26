@@ -5,7 +5,7 @@ import javafx.event.{ActionEvent, EventHandler}
 import javafx.scene.control.{ContextMenu, Menu, MenuItem}
 
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
-import protobufui.test.SendMessageStep
+import protobufui.test.step.{ValidateStep, SetSpecsStep, SendMessageStep}
 
 class TestCaseView(workspaceEntry: WorkspaceEntry) extends WorkspaceEntryView {
 
@@ -28,12 +28,12 @@ class TestCaseView(workspaceEntry: WorkspaceEntry) extends WorkspaceEntryView {
     })
     setSpecsStep.setOnAction(new EventHandler[ActionEvent] {
       override def handle(event: ActionEvent): Unit = {
-        //addWorkSpaceEntry(new TestStep(TestStepType.Params))
+        addWorkSpaceEntry(new SetSpecsStep)
       }
     })
     validateStep.setOnAction(new EventHandler[ActionEvent] {
       override def handle(event: ActionEvent): Unit = {
-        //addWorkSpaceEntry(new TestStep(TestStepType.Validation))
+        addWorkSpaceEntry(new ValidateStep)
       }
     })
     Some(new ContextMenu(newTestStep))
