@@ -35,7 +35,7 @@ class MessagesRootView(val model: WorkspaceEntry) extends WorkspaceEntryView wit
   ClassesContainer.addListener(this)
   override def invalidated(observable: Observable): Unit = {
     ClassesContainer.getClasses.foreach { x => addWorkSpaceEntry(new MessageEntry(x){
-      override def uuid = x.getClass.getName
+      override def uuid = x.clazz.getName
     })}
   }
 
@@ -45,7 +45,8 @@ class MessagesRootView(val model: WorkspaceEntry) extends WorkspaceEntryView wit
       override def handle(event: ActionEvent): Unit = {
         val fileChooser:FileChooser = new FileChooser()
         fileChooser.setTitle("Open Resource Dialog")
-        fileChooser.setInitialDirectory(new File("..\\src\\test\\resources\\protobufui\\service\\source"))
+        val s: String = s"${File.separator}"
+        fileChooser.setInitialDirectory(new File(s"..${s}src${s}test${s}resources${s}protobufui${s}service${s}source"))
         fileChooser.setSelectedExtensionFilter(new ExtensionFilter("Select .proto or .jar file", "proto", "jar"))
         val files = fileChooser.showOpenMultipleDialog(null)
         files.asScala.foreach{classesLoader ! Put(_)}
