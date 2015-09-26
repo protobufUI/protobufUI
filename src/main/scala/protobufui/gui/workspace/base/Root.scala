@@ -3,7 +3,6 @@ package protobufui.gui.workspace.base
 import javafx.beans.property.{SimpleStringProperty, StringProperty}
 import javafx.scene.control.ContextMenu
 
-import ipetoolkit.util.Message
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.gui.workspace.mock.MocksView
 
@@ -18,6 +17,4 @@ class Root extends WorkspaceEntryView {
   override def model: WorkspaceEntry = new DummyModel(this)
 
   override def contextMenu: Option[ContextMenu] = None
-
-  override def detailsOpener: Option[Message] = None
 }

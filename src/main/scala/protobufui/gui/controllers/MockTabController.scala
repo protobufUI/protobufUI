@@ -3,8 +3,8 @@ package protobufui.gui.controllers
 import java.net.{InetSocketAddress, URL}
 import java.util.ResourceBundle
 import java.{lang, util}
-import javafx.beans.{Observable, InvalidationListener}
 import javafx.beans.value.{ChangeListener, ObservableValue}
+import javafx.beans.{InvalidationListener, Observable}
 import javafx.event.EventHandler
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control._
@@ -13,21 +13,22 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination, KeyEvent
 import akka.actor._
 import com.google.protobuf.{MessageLite, UnknownFieldSet}
 import ipetoolkit.util.JavaFXDispatcher
+import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
 import protobufui.gui.Main
 import protobufui.gui.controllers.MockTabController.{Start, Stop}
 import protobufui.gui.workspace.mock.MockView
-import protobufui.service.mock.{Mock, MockDefinition}
+import protobufui.service.mock.{MockEntry, Mock, MockDefinition}
 import protobufui.service.script.ScalaScriptingCtx
 import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
 
 import scala.collection.JavaConverters._
 
-class MockTabController extends Initializable with InvalidationListener {
+class MockTabController extends Initializable with InvalidationListener with DetailsController {
 
   val mockSupervisor = Main.actorSystem.actorOf(Props(new MockSupervisor).withDispatcher(JavaFXDispatcher.Id))
   val scriptCtx = new ScalaScriptingCtx
-  var workspaceEntry: MockView = _
+  var workspaceEntry: MockEntry = _
   @FXML var nameField: TextField = _
   @FXML var portField: TextField = _
   @FXML var responseTypeCombo: ComboBox[MessageClass] = _
@@ -107,8 +108,8 @@ class MockTabController extends Initializable with InvalidationListener {
   }
 
   def setWorkspaceEntry(entry: MockView) = {
-    workspaceEntry = entry
-    nameField.textProperty().bindBidirectional(workspaceEntry.nameProperty)
+
+    nameField.textProperty().bindBidirectional(workspaceEntry.view.nameProperty)
   }
 
   private class MockSupervisor extends Actor with ActorLogging {
@@ -137,6 +138,10 @@ class MockTabController extends Initializable with InvalidationListener {
         context.become(waitForStart)
     }
 
+  }
+
+  override def setModel(workspaceEntry: WorkspaceEntry): Unit = {
+    this.workspaceEntry = workspaceEntry.asInstanceOf[MockEntry]
   }
 }
 

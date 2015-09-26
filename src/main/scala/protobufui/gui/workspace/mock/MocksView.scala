@@ -24,7 +24,4 @@ class MocksView extends WorkspaceEntryView {
     })
     Some(new ContextMenu(newMock))
   }
-
-  override def detailsOpener: Option[Message] = None
-
 }

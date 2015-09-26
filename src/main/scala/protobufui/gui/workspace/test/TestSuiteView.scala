@@ -23,7 +23,4 @@ class TestSuiteView(workspaceEntry: WorkspaceEntry) extends WorkspaceEntryView {
     })
     Some(new ContextMenu(newTestCase))
   }
-
-  override def detailsOpener: Option[Message] = None
-
 }

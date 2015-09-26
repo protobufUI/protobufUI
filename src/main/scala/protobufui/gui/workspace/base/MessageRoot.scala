@@ -1,22 +1,20 @@
 package protobufui.gui.workspace.base
 
 import java.io.File
-import javafx.beans.{Observable, InvalidationListener}
 import javafx.beans.property.{SimpleStringProperty, StringProperty}
+import javafx.beans.{InvalidationListener, Observable}
 import javafx.event.{ActionEvent, EventHandler}
 import javafx.scene.control.{ContextMenu, MenuItem}
 import javafx.stage.FileChooser
 import javafx.stage.FileChooser.ExtensionFilter
 
 import akka.actor.Props
-import ipetoolkit.util.Message
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.Globals
 import protobufui.gui.Main
 import protobufui.service.message.MessageEntry
-import protobufui.service.source.ClassesContainer.MessageClass
-import protobufui.service.source.{ClassesContainer, ClassesLoader}
 import protobufui.service.source.ClassesLoader.Put
+import protobufui.service.source.{ClassesContainer, ClassesLoader}
 
 import scala.collection.JavaConverters._
 import scala.language.implicitConversions
@@ -52,5 +50,4 @@ class MessageRoot() extends WorkspaceEntryView with InvalidationListener{
     Some(new ContextMenu(protoJARSelector))
   }
 
-  override def detailsOpener: Option[Message] = None
 }

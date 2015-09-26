@@ -6,7 +6,7 @@ import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control._
 
-import ipetoolkit.workspace.WorkspaceEntry
+import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
 import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
 import protobufui.test.SendMessageStep
@@ -14,7 +14,7 @@ import protobufui.test.SendMessageStep
 /**
  * Created by humblehound on 26.09.15.
  */
-class SendMessageController extends Initializable {
+class SendMessageController extends Initializable with DetailsController {
 
   @FXML var testName: TextField = _
   @FXML var messageArea: TextArea = _

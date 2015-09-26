@@ -4,7 +4,6 @@ import javafx.beans.property.{SimpleStringProperty, StringProperty}
 import javafx.event.{ActionEvent, EventHandler}
 import javafx.scene.control.{ContextMenu, MenuItem}
 
-import ipetoolkit.util.Message
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.service.test.TestSuite
 
@@ -23,6 +22,4 @@ class TestRoot extends WorkspaceEntryView {
     })
     Some(new ContextMenu(newTestSuite))
   }
-
-  override def detailsOpener: Option[Message] = None
 }
