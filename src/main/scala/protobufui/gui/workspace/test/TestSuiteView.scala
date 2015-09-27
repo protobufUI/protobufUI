@@ -2,11 +2,10 @@ package protobufui.gui.workspace.test
 
 import javafx.beans.property.{SimpleStringProperty, StringProperty}
 import javafx.event.{ActionEvent, EventHandler}
-import javafx.scene.control.{MenuItem, ContextMenu}
+import javafx.scene.control.{ContextMenu, MenuItem}
 
-import ipetoolkit.util.Message
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
-import protobufui.test.TestCase
+import protobufui.test.TestCaseEntry
 
 class TestSuiteView(workspaceEntry: WorkspaceEntry) extends WorkspaceEntryView {
 
@@ -18,7 +17,7 @@ class TestSuiteView(workspaceEntry: WorkspaceEntry) extends WorkspaceEntryView {
     val newTestCase = new MenuItem("New Test Case")
     newTestCase.setOnAction(new EventHandler[ActionEvent] {
       override def handle(event: ActionEvent): Unit = {
-        addWorkSpaceEntry(new TestCase())
+        addWorkSpaceEntry(new TestCaseEntry())
       }
     })
     Some(new ContextMenu(newTestCase))

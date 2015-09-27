@@ -13,11 +13,11 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination, KeyEvent
 import akka.actor._
 import com.google.protobuf.{MessageLite, TextFormat, UnknownFieldSet}
 import ipetoolkit.util.JavaFXDispatcher
-import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
+import ipetoolkit.workspace.DetailsController
 import protobufui.gui.Main
 import protobufui.gui.controllers.MockTabController.{Start, Stop}
 import protobufui.gui.workspace.mock.MockView
-import protobufui.service.mock.{MockEntry, Mock, MockDefinition}
+import protobufui.service.mock.{Mock, MockDefinition}
 import protobufui.service.script.ScalaScriptingCtx
 import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
@@ -28,7 +28,6 @@ class MockTabController extends Initializable with InvalidationListener with Det
 
   val mockSupervisor = Main.actorSystem.actorOf(Props(new MockSupervisor).withDispatcher(JavaFXDispatcher.Id))
   val scriptCtx = new ScalaScriptingCtx
-  var workspaceEntry: MockEntry = _
   @FXML var nameField: TextField = _
   @FXML var portField: TextField = _
   @FXML var responseClassCombo: ComboBox[MessageClass] = _
@@ -115,7 +114,7 @@ class MockTabController extends Initializable with InvalidationListener with Det
 
   def setWorkspaceEntry(entry: MockView) = {
 
-    nameField.textProperty().bindBidirectional(workspaceEntry.view.nameProperty)
+    nameField.textProperty().bindBidirectional(model.view.nameProperty)
   }
 
 
@@ -163,9 +162,6 @@ class MockTabController extends Initializable with InvalidationListener with Det
 
   }
 
-  override def setModel(workspaceEntry: WorkspaceEntry): Unit = {
-    this.workspaceEntry = workspaceEntry.asInstanceOf[MockEntry]
-  }
 }
 
 object MockTabController {

@@ -6,10 +6,10 @@ import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control._
 
-import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
+import ipetoolkit.workspace.DetailsController
 import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
-import protobufui.test.step.SendMessageStep
+import protobufui.test.step.SendMessageStepEntry
 
 /**
  * Created by humblehound on 26.09.15.
@@ -27,7 +27,8 @@ class SendMessageController extends Initializable with DetailsController {
   @FXML var saveBtn: Button = _
 
   var selectedMessageClass: MessageClass = _
-  var sendMessageStep : SendMessageStep = new SendMessageStep
+
+  def sendMessageStep: SendMessageStepEntry = model.asInstanceOf[SendMessageStepEntry]
 
   override def initialize(location: URL, resources: ResourceBundle): Unit = {
     import scala.collection.JavaConverters._
@@ -43,9 +44,6 @@ class SendMessageController extends Initializable with DetailsController {
     loadFormValuesFromTest()
   }
 
-  def setModel(entry: WorkspaceEntry) = {
-    this.sendMessageStep = entry.asInstanceOf[SendMessageStep]
-  }
 
   @FXML
   private def save(): Unit ={
@@ -58,7 +56,7 @@ class SendMessageController extends Initializable with DetailsController {
   }
 
   private def validate(): Boolean ={
-    return true
+    true
   }
 
   private def saveFormValuesToTest() = {

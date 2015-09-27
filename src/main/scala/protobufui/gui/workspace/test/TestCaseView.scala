@@ -5,9 +5,10 @@ import javafx.event.{ActionEvent, EventHandler}
 import javafx.scene.control.{ContextMenu, Menu, MenuItem}
 
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
-import protobufui.test.step.{ValidateStep, SetSpecsStep, SendMessageStep}
+import protobufui.test.TestCaseEntry
+import protobufui.test.step.{SendMessageStepEntry, SetSpecsStepEntry, ValidateStepEntry}
 
-class TestCaseView(workspaceEntry: WorkspaceEntry) extends WorkspaceEntryView {
+class TestCaseView(workspaceEntry: TestCaseEntry) extends WorkspaceEntryView {
 
   override val nameProperty: StringProperty = new SimpleStringProperty("Test Case")
 
@@ -21,22 +22,18 @@ class TestCaseView(workspaceEntry: WorkspaceEntry) extends WorkspaceEntryView {
 
     newTestStep.getItems.addAll(messageStep, setSpecsStep, validateStep)
 
-    messageStep.setOnAction(new EventHandler[ActionEvent] {
-      override def handle(event: ActionEvent): Unit = {
-        addWorkSpaceEntry(new SendMessageStep)
-      }
-    })
-    setSpecsStep.setOnAction(new EventHandler[ActionEvent] {
-      override def handle(event: ActionEvent): Unit = {
-        addWorkSpaceEntry(new SetSpecsStep)
-      }
-    })
-    validateStep.setOnAction(new EventHandler[ActionEvent] {
-      override def handle(event: ActionEvent): Unit = {
-        addWorkSpaceEntry(new ValidateStep)
-      }
-    })
+    addEntryOnAction(messageStep, new SendMessageStepEntry)
+    addEntryOnAction(setSpecsStep, new SetSpecsStepEntry)
+    addEntryOnAction(validateStep, new ValidateStepEntry)
+
     Some(new ContextMenu(newTestStep))
   }
 
+  override def detailsPath: String = "/fxml/testCaseDetails.fxml"
+
+  private def addEntryOnAction(menuItem: MenuItem, entry: => WorkspaceEntry) = menuItem.setOnAction(new EventHandler[ActionEvent] {
+    override def handle(event: ActionEvent): Unit = {
+      addWorkSpaceEntry(entry)
+    }
+  })
 }

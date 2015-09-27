@@ -9,7 +9,7 @@ import akka.actor.{Actor, Props, Terminated}
 import akka.util.ByteString
 import com.google.protobuf.{Message, MessageLite, TextFormat}
 import ipetoolkit.util.JavaFXDispatcher
-import ipetoolkit.workspace.{WorkspaceEntry, DetailsController}
+import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
 import protobufui.gui.Main
 import protobufui.service.message.MessageEntry
 import protobufui.service.socket.TcpMessageSender
@@ -52,8 +52,8 @@ class MessageTabController extends Initializable with DetailsController {
     responseArea.setText("Send failed. Look into logs for details.")
   }
 
-  def setWorkspaceEntry(entry: MessageEntry) = {
-    this.messageEntry = entry
+  override def setModel(entry: WorkspaceEntry) = {
+    this.messageEntry = entry.asInstanceOf[MessageEntry]
     val newDefaultRequest = TextFormat.printToString(messageEntry.messageClass.getInstanceFilledWithDefaults)
     requestArea.setText(newDefaultRequest)
   }
@@ -77,7 +77,4 @@ class MessageTabController extends Initializable with DetailsController {
 
   }
 
-  override def setModel(workspaceEntry: WorkspaceEntry): Unit = {
-
-  }
 }
