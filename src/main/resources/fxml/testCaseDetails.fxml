@@ -5,14 +5,14 @@
 <GridPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="protobufui.gui.controllers.TestCaseTabController">
     <children>
-        <TableView GridPane.columnSpan="2147483647">
+        <TableView fx:id="stepTable" GridPane.columnSpan="2147483647">
             <columns>
-                <TableColumn minWidth="200.0" prefWidth="-1.0" text="Test name"/>
-                <TableColumn minWidth="100.0" prefWidth="-1.0" text="Result"/>
+                <TableColumn fx:id="nameColumn" minWidth="200.0" prefWidth="-1.0" text="Test name"/>
+                <TableColumn fx:id="statusColumn" minWidth="100.0" prefWidth="-1.0" text="Status"/>
             </columns>
         </TableView>
-        <Button mnemonicParsing="false" text="Refresh" GridPane.rowIndex="1"/>
-        <Button mnemonicParsing="false" text="Run" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
+        <Button onAction="#refresh" mnemonicParsing="false" text="Refresh" GridPane.rowIndex="1"/>
+        <Button onAction="#run" mnemonicParsing="false" text="Run" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
                 GridPane.rowIndex="1"/>
     </children>
     <columnConstraints>

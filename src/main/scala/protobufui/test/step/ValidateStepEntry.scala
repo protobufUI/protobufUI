@@ -15,4 +15,6 @@ class ValidateStepEntry extends WorkspaceEntry with TestStep {
 
 
   override def run(context: TestStepContext): (TestStepResult, TestStepContext) = (new TestStepResult(ResultType.Success), context)
+
+  override def name: String = "ValidateStepEntry"
 }

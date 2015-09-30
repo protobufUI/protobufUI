@@ -64,11 +64,13 @@ class SendMessageController extends Initializable with DetailsController {
 //    TextFormat.getParser.merge(messageArea.getText, builder)
   //
 //    sendMessageStep.message = builder.build()
-    sendMessageStep.testName = testName.getText
-    sendMessageStep.ipAddress = ipAddress.getText
-    sendMessageStep.ipPort = ipPort.getText
-    sendMessageStep.testName = testName.getText
-    sendMessageStep.messageClass = messageClassPicker.getSelectionModel.getSelectedItem
+    if (sendMessageStep != null) {
+      sendMessageStep.name = testName.getText
+      sendMessageStep.ipAddress = ipAddress.getText
+      sendMessageStep.ipPort = ipPort.getText
+      sendMessageStep.name = testName.getText
+      sendMessageStep.messageClass = messageClassPicker.getSelectionModel.getSelectedItem
+    }
   }
 
   @FXML
@@ -99,7 +101,7 @@ class SendMessageController extends Initializable with DetailsController {
   private def loadFormValuesFromTest(): Unit ={
     ipAddress.setText(sendMessageStep.ipAddress)
     ipPort.setText(sendMessageStep.ipPort)
-    testName.setText(sendMessageStep.testName)
+    testName.setText(sendMessageStep.name)
     messageClassPicker.getSelectionModel.select(sendMessageStep.messageClass)
 //    messageArea.setText(sendMessageStep.message.toString)
   }
