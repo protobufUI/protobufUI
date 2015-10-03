@@ -7,9 +7,9 @@ import javafx.scene.control.{MenuItem, ContextMenu}
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.util.dialog.Dialog
 
-class TestStepView(workspaceEntry: WorkspaceEntry, override val detailsPath: String) extends WorkspaceEntryView {
+class TestStepView(workspaceEntry: WorkspaceEntry, override val detailsPath: String, val name: String) extends WorkspaceEntryView {
 
-  override val nameProperty: StringProperty = new SimpleStringProperty("Test Step")
+  override val nameProperty: StringProperty = new SimpleStringProperty(name)
 
   override def model: WorkspaceEntry = workspaceEntry
 

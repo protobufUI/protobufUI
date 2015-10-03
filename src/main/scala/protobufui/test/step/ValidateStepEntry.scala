@@ -11,10 +11,9 @@ import protobufui.gui.workspace.test.TestStepView
 @XmlRootElement
 class ValidateStepEntry extends WorkspaceEntry with TestStep {
 
-  override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepValidate.fxml")
-
+  override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepValidate.fxml", "ValidateStepEntry")
 
   override def run(context: TestStepContext): (TestStepResult, TestStepContext) = (new TestStepResult(ResultType.Success), context)
 
-  override def name: String = "ValidateStepEntry"
+  override def name: String = nameProperty.get()
 }

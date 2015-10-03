@@ -18,7 +18,7 @@ class SendMessageStepEntry extends WorkspaceEntry with TestStep {
   var messageClass: MessageClass = _
   var message: Message = _
 
-  override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepMessage.fxml")
+  override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepMessage.fxml", "SendMessageStep")
 
   override def run(context: TestStepContext): (TestStepResult, TestStepContext) = (new TestStepResult(ResultType.Success), context)
 
