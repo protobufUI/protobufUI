@@ -9,7 +9,7 @@ organization := "pl.protobufui"
 
 scalaVersion := "2.11.7"
 
-val ipeVersion = "0.1.8-SNAPSHOT"
+val ipeVersion = "0.1.9-SNAPSHOT"
 val akkaVersion = "2.3.11"
 
 libraryDependencies ++= {

@@ -1,7 +1,7 @@
 package protobufui.gui
 
 import java.io.File
-import javafx.application.{Platform, Application}
+import javafx.application.{Application, Platform}
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.TextInputDialog
@@ -16,7 +16,7 @@ import protobufui.Globals
 class Main extends Application {
 
   override def start(primaryStage: Stage): Unit = {
-    setWorkspaceRoot
+    setWorkspaceRoot()
     val root: Parent = FXMLLoader.load(getClass.getResource("/fxml/main.fxml"))
     primaryStage.setTitle("protobufUI")
     primaryStage.setScene(new Scene(root, 800, 600))
@@ -24,18 +24,19 @@ class Main extends Application {
     primaryStage.setOnCloseRequest(new EventHandler[WindowEvent] {
       override def handle(event: WindowEvent): Unit = {
         Platform.exit()
+        System.exit(0)
       }
     })
     primaryStage.show()
   }
 
-  def setWorkspaceRoot = {
+  def setWorkspaceRoot() = {
     val dialog = new TextInputDialog(System.getProperty("user.home")+File.separator+".protobufUI")
     dialog.setTitle("Workspace Root Selector")
     dialog.setContentText("Insert path to the workspace root")
     val result = dialog.showAndWait()
     if(result.isPresent){
-      Globals.setProperty("workspace.root",result.get())
+      Globals.setProperty(Globals.Keys.workspaceRoot, result.get())
     }
   }
 }

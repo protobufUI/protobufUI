@@ -2,15 +2,16 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/null"
             fx:controller="protobufui.gui.controllers.MainController">
     <top>
         <VBox>
             <MenuBar>
                 <Menu mnemonicParsing="false" text="File">
+                    <MenuItem onAction="#saveWorkspace" mnemonicParsing="false" text="Save"/>
                     <MenuItem mnemonicParsing="false" text="Close"/>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
