@@ -15,13 +15,13 @@ class DirectoryLoader(workspaceRoot: File) extends Actor with ActorLogging {
       val classFiles = Utils.getFileTree(directory)
         .filter(file => file.getName.endsWith(".java"))
         .map(Utils.compile)
-        .flatMap(getClassFiles(_))
+        .flatMap(getClassFiles)
         .map(file => {
         copyToWorkspace(file,directory)
         extractClassName(file,directory)
       }).toList
 
-        classFiles.foreach(classLoader.loadAndStore(_))
+        classFiles.foreach(classLoader.loadAndStore)
 
         context.parent ! Loaded
     }
@@ -40,7 +40,7 @@ class DirectoryLoader(workspaceRoot: File) extends Actor with ActorLogging {
   def copyToWorkspace(file: File, directory: File): Unit = {
     val sourcePath = file.toPath
     val relativePath: String = file.getAbsolutePath.replace(directory.getAbsolutePath, "")
-    val destinationFile: File = new File(workspaceRoot, relativePath)
+    val destinationFile: File = new File(workspaceRoot+File.separator+"classes", relativePath)
     destinationFile.mkdirs()
     val destinationPath = destinationFile.toPath
     Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING)

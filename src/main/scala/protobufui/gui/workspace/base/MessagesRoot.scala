@@ -14,7 +14,7 @@ import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.Globals
 import protobufui.Main
 import protobufui.service.message.MessageEntry
-import protobufui.service.source.ClassesLoader.Put
+import protobufui.service.source.ClassesLoader.{LoadWorkspace, Put}
 import protobufui.service.source.{ClassesContainer, ClassesLoader}
 
 import scala.collection.JavaConverters._
@@ -30,6 +30,8 @@ class MessagesRootView(val model: WorkspaceEntry) extends WorkspaceEntryView wit
   val classesLoader = Main.actorSystem.actorOf(Props(new ClassesLoader(workspaceRoot)))
 
   override val nameProperty: StringProperty = new SimpleStringProperty("Messages")
+
+  classesLoader ! LoadWorkspace
 
   ClassesContainer.addListener(this)
   override def invalidated(observable: Observable): Unit = {
