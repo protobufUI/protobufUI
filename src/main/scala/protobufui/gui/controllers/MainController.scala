@@ -11,7 +11,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.{BorderPane, HBox, StackPane}
 
 import ipetoolkit.details.DetailsTabPaneManager
-import ipetoolkit.workspace.WorkspaceManagement.NewWorkspace
+import ipetoolkit.workspace.WorkspaceManagement.{LoadOrNewWorkspace, SaveWorkspace}
 import ipetoolkit.workspace.{WorkspaceEntryView, WorkspaceManager}
 import protobufui.Globals
 import protobufui.gui.Main
@@ -35,11 +35,13 @@ class MainController extends Initializable {
   @FXML
   var detailsTabPane: TabPane = _
 
+  val workspaceFileName = "workspace.xml"
+
   override def initialize(location: URL, resources: ResourceBundle): Unit = {
     import Main.eventBus
     workspaceTreeView.setShowRoot(false)
     val wm = Main.actorSystem.actorOf(WorkspaceManager.props(workspaceTreeView))
-    wm ! NewWorkspace(Globals.getProperty("workspace.root").get + File.separator + "workspace.xml", RootEntry.createRootEntryWithSubRoots())
+    wm ! LoadOrNewWorkspace(Globals.getProperty(Globals.Keys.workspaceRoot).get + File.separator + workspaceFileName, RootEntry.createRootEntryWithSubRoots())
     Main.actorSystem.actorOf(DetailsTabPaneManager.props(detailsTabPane))
     initExpandingResultView()
 
@@ -55,7 +57,7 @@ class MainController extends Initializable {
     expandingResultButton onMouseClickedProperty() setValue new EventHandler[MouseEvent] {
       override def handle(event: MouseEvent): Unit = toggleResultViewVisible()
     }
-    StackPane.setAlignment(expandingResultView, Pos.BOTTOM_CENTER);
+    StackPane.setAlignment(expandingResultView, Pos.BOTTOM_CENTER)
 
     expandingResultView.setDisable(true)
     expandingResultView.setVisible(false)
@@ -66,4 +68,10 @@ class MainController extends Initializable {
     expandingResultView.setDisable(!expandingResultView.isDisable)
     expandingResultView.setVisible(!expandingResultView.isVisible)
   }
+
+
+  def saveWorkspace(): Unit = {
+    Main.eventBus.publish(SaveWorkspace(Globals.getProperty(Globals.Keys.workspaceRoot).get + File.separator + workspaceFileName))
+  }
+
 }

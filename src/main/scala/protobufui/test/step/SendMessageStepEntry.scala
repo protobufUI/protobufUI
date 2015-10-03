@@ -12,7 +12,7 @@ import protobufui.service.source.ClassesContainer.MessageClass
  */
 @XmlRootElement
 class SendMessageStepEntry extends WorkspaceEntry with TestStep {
-  var name: String = "Send message"
+
   var ipAddress : String = "192.168.0.1"
   var ipPort : String = "80"
   var messageClass: MessageClass = _
@@ -21,6 +21,8 @@ class SendMessageStepEntry extends WorkspaceEntry with TestStep {
   override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepMessage.fxml")
 
   override def run(context: TestStepContext): (TestStepResult, TestStepContext) = (new TestStepResult(ResultType.Success), context)
+
+  override def name: String = nameProperty.get()
 }
 
 

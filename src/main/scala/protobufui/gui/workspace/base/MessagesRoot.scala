@@ -26,7 +26,7 @@ class MessagesRootEntry extends WorkspaceEntry {
 }
 
 class MessagesRootView(val model: WorkspaceEntry) extends WorkspaceEntryView with InvalidationListener {
-  private val workspaceRoot: File = new File(Globals.getProperty("workspace.root").get)
+  private val workspaceRoot: File = new File(Globals.getProperty(Globals.Keys.workspaceRoot).get)
   val classesLoader = Main.actorSystem.actorOf(Props(new ClassesLoader(workspaceRoot)))
 
   override val nameProperty: StringProperty = new SimpleStringProperty("Messages")
