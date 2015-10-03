@@ -8,8 +8,8 @@ import scopt.OptionParser
 case class Config(workspace: File=null,
                    load: File=null,
                    gui:Boolean=false,
-                   suites:List[String]=List(),
-                   cases:List[String]=List())
+                   suites:Seq[String]=Seq(),
+                   cases:Seq[String]=Seq())
 
 object Parser{
   val parser = new OptionParser[Config](s"${BuildInfo.jarName}.jar") {
@@ -24,10 +24,10 @@ object Parser{
     opt[File]('l', "load") valueName "<file>" action { (x, c) =>
       c.copy(load = x) } text "directory, proto or jar to be loaded"
 
-    opt[List[String]]('s', "suite") valueName "<test_suite1,test_suite2>" action { (x, c) =>
+    opt[Seq[String]]('s', "suite") valueName "<test_suite1,test_suite2>" action { (x, c) =>
       c.copy(suites = x) } text "test suites list"
 
-    opt[List[String]]('c', "cases") valueName "<test_case1,test_case2>" action { (x, c) =>
+    opt[Seq[String]]('c', "cases") valueName "<test_case1,test_case2>" action { (x, c) =>
       c.copy(cases = x) } text "test cases list"
 
     opt[Unit]("gui") action { (_, c) =>
