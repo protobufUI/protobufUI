@@ -6,12 +6,10 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.{Parent, Scene}
 import javafx.stage.{Stage, WindowEvent}
 
-import akka.actor.ActorSystem
-import ipetoolkit.bus.{ClassBasedEventBus, IPEEventBus}
 import protobufui.util.dialog.Dialog
 
 
-class Main extends Application {
+class GuiMain extends Application {
 
   override def start(primaryStage: Stage): Unit = {
     Dialog.setWorkspaceRoot()
@@ -26,17 +24,5 @@ class Main extends Application {
       }
     })
     primaryStage.show()
-  }
-
-
-}
-
-object Main {
-
-  val actorSystem: ActorSystem = ActorSystem("protobufUI")
-  implicit val eventBus: ClassBasedEventBus = IPEEventBus
-
-  def main(args: Array[String]): Unit = {
-    Application.launch(classOf[Main], args: _*)
   }
 }

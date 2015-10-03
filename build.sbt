@@ -10,6 +10,8 @@ organization := "pl.protobufui"
 scalaVersion := "2.11.7"
 
 val ipeVersion = "0.1.10-SNAPSHOT"
+resolvers += Resolver.sonatypeRepo("public")
+
 val akkaVersion = "2.3.11"
 
 libraryDependencies ++= {
@@ -25,10 +27,9 @@ libraryDependencies ++= {
     , "org.scala-lang" % "scala-library" % scalaV
     , "org.scala-lang" % "scala-reflect" % scalaV
     , "jline" % "jline" % "2.13"
+    , "com.github.scopt" %% "scopt" % "3.3.0"
   )
 }
-
-mainClass in assembly := Some("protobufui.gui.Main")
 
 PB.protobufSettings
 
@@ -37,7 +38,20 @@ PB.protobufSettings
 fork := true
 fork in Test := true
 
-mainClass in(Compile, run) := Some("protobufui.gui.Main")
+mainClass in(Compile, run) := Some("protobufui.Main")
 
+test in assembly := {}
+mainClass in assembly := Some("protobufui.Main")
 
+assemblyJarName in assembly := s"${name.value}-${version.value}.jar"
+
+lazy val root = (project in file(".")).
+  enablePlugins(BuildInfoPlugin).
+  settings(
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,
+      "jarName" ->  s"${name.value}-${version.value}.jar"
+    ),
+    buildInfoPackage := "packageinfo",
+    buildInfoOptions += BuildInfoOption.BuildTime
+  )
 

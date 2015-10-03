@@ -12,7 +12,7 @@ import javafx.util.Callback
 import akka.actor.{Actor, ActorRef, Props}
 import ipetoolkit.util.JavaFXDispatcher
 import ipetoolkit.workspace.DetailsController
-import protobufui.gui.Main
+import protobufui.Main
 import protobufui.gui.controllers.TestCaseTabController.TestStepResult
 import protobufui.service.test.TestRunner
 import protobufui.service.test.TestRunner.{Run, TestStepRunResult}

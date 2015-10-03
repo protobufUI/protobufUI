@@ -10,7 +10,7 @@ import akka.util.ByteString
 import com.google.protobuf.{Message, MessageLite, TextFormat}
 import ipetoolkit.util.JavaFXDispatcher
 import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
-import protobufui.gui.Main
+import protobufui.Main
 import protobufui.service.message.MessageEntry
 import protobufui.service.socket.TcpMessageSender
 import protobufui.service.socket.TcpMessageSender._

@@ -14,7 +14,7 @@ import ipetoolkit.details.DetailsTabPaneManager
 import ipetoolkit.workspace.WorkspaceManagement.{LoadOrNewWorkspace, SaveWorkspace}
 import ipetoolkit.workspace.{WorkspaceEntryView, WorkspaceManager}
 import protobufui.Globals
-import protobufui.gui.Main
+import protobufui.Main
 import protobufui.gui.workspace.base.RootEntry
 
 

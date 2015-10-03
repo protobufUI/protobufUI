@@ -14,7 +14,7 @@ import akka.actor._
 import com.google.protobuf.{MessageLite, TextFormat, UnknownFieldSet}
 import ipetoolkit.util.JavaFXDispatcher
 import ipetoolkit.workspace.DetailsController
-import protobufui.gui.Main
+import protobufui.Main
 import protobufui.gui.controllers.MockTabController.{Start, Stop}
 import protobufui.gui.workspace.mock.MockView
 import protobufui.service.mock.{Mock, MockDefinition}

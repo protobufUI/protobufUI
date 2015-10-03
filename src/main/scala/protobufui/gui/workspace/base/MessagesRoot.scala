@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement
 import akka.actor.Props
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.Globals
-import protobufui.gui.Main
+import protobufui.Main
 import protobufui.service.message.MessageEntry
 import protobufui.service.source.ClassesLoader.Put
 import protobufui.service.source.{ClassesContainer, ClassesLoader}

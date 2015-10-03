@@ -1,6 +1,7 @@
 package protobufui.util.dialog
 
 import java.io.File
+import javafx.application.Platform
 import javafx.beans.property.StringProperty
 import javafx.scene.control.TextInputDialog
 
@@ -31,6 +32,8 @@ object Dialog {
     val result = dialog.showAndWait()
     if(result.isPresent){
       Globals.setProperty(Globals.Keys.workspaceRoot, result.get())
+    }else{
+      Platform.exit()
     }
   }
 
