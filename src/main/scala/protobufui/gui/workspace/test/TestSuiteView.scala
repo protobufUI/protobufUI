@@ -6,6 +6,7 @@ import javafx.scene.control.{ContextMenu, MenuItem}
 
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.test.TestCaseEntry
+import protobufui.util.dialog.Dialog
 
 class TestSuiteView(workspaceEntry: WorkspaceEntry) extends WorkspaceEntryView {
 
@@ -20,6 +21,18 @@ class TestSuiteView(workspaceEntry: WorkspaceEntry) extends WorkspaceEntryView {
         addWorkSpaceEntry(new TestCaseEntry())
       }
     })
-    Some(new ContextMenu(newTestCase))
+    val rename = new MenuItem("Rename")
+    rename.setOnAction(new EventHandler[ActionEvent] {
+      override def handle(event: ActionEvent): Unit = {
+        Dialog.rename(nameProperty);
+      }
+    })
+    val delete = new MenuItem("Delete")
+    delete.setOnAction(new EventHandler[ActionEvent] {
+      override def handle(event: ActionEvent): Unit = {
+        model.delete()
+      }
+    })
+    Some(new ContextMenu(newTestCase, rename, delete))
   }
 }

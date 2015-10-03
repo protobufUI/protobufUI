@@ -69,10 +69,9 @@ class SendMessageController extends Initializable with DetailsController {
   //
 //    sendMessageStep.message = builder.build()
     if (sendMessageStep != null) {
-      sendMessageStep.name = testName.getText
+      sendMessageStep.nameProperty.setValue(testName.getText)
       sendMessageStep.ipAddress = ipAddress.getText
       sendMessageStep.ipPort = ipPort.getText
-      sendMessageStep.name = testName.getText
       sendMessageStep.messageClass = messageClassPicker.getSelectionModel.getSelectedItem
     }
   }
