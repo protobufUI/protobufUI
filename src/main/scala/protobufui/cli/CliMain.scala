@@ -1,10 +1,15 @@
 package protobufui.cli
 
+import java.io.File
+import java.time.LocalDateTime
+import javax.xml.bind.{Marshaller, JAXBContext}
+
 import akka.actor.Props
 import ipetoolkit.workspace.WorkspaceManagement.LoadWorkspace
 import ipetoolkit.workspace.WorkspaceManager
 import protobufui.service.source.ClassesLoader.Put
 import protobufui.test.format.TestReportCreator
+import protobufui.test.format.generated.Testsuites
 import protobufui.test.{TestCaseResult, TestSuiteResult}
 import protobufui.{Globals, Main}
 import protobufui.service.source.ClassesLoader
@@ -33,6 +38,13 @@ object CliMain {
     val suitesResults = Await.result(suitesResultsFuture,30 seconds)
     val casesResults = Await.result(casesResultsFuture,30 seconds)
     val jaxbResult = TestReportCreator.createReport(suitesResults) // todo: dla casów
-    
+
+
+    val reportsRoot = Globals.getProperty(Globals.Keys.workspaceRoot) + File.separator + "reports"
+
+    val jaxbContext = JAXBContext.newInstance(classOf[Testsuites])
+    val jaxbMarshaller = jaxbContext.createMarshaller()
+    jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
+    jaxbMarshaller.marshal(jaxbResult, new File(reportsRoot,LocalDateTime.now.toString))
   }
 }
