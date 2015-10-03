@@ -13,8 +13,6 @@ import akka.actor.{Actor, ActorRef, Props}
 import ipetoolkit.util.JavaFXDispatcher
 import ipetoolkit.workspace.DetailsController
 import protobufui.Main
-import protobufui.service.test.TestRunner
-import protobufui.service.test.TestRunner.{Run, TestStepRunResult}
 import protobufui.test.ResultType._
 import protobufui.test.step.TestStepResult
 import protobufui.test.{ResultType, TestCaseEntry}
@@ -88,15 +86,15 @@ object TestCaseTabController {
 
     @throws[Exception](classOf[Exception])
     override def preStart(): Unit = {
-      val runner = context.system.actorOf(Props[TestRunner])
-      runner ! Run(stepTable.getItems.asScala.map(_.step).toList)
+      /*val runner = context.system.actorOf(Props[TestStepsRunner])
+      runner ! Run(stepTable.getItems.asScala.map(_.step).toList)*/
     }
 
-    override def receive: Receive = {
-      case TestStepRunResult(idx, result) =>
+    override def receive: Receive = ??? /*{ TODO actor wyciety, przerobic na future
+      case SingleStepResult(idx, result) =>
         val curItem = stepTable.getItems.get(idx)
         stepTable.getItems.set(idx, curItem.copy(result = result))
-    }
+    }*/
   }
 
 }

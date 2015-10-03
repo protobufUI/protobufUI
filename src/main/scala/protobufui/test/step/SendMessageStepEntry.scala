@@ -1,5 +1,4 @@
 package protobufui.test.step
-
 import javax.xml.bind.annotation.XmlRootElement
 
 import com.google.protobuf.Message
@@ -8,6 +7,8 @@ import protobufui.gui.workspace.test.TestStepView
 import protobufui.service.source.ClassesContainer.MessageClass
 import protobufui.test.ResultType
 import protobufui.test.ResultType._
+
+import scala.concurrent.Future
 
 /**
  * Created by humblehound on 26.09.15.
@@ -24,7 +25,7 @@ class SendMessageStepEntry extends WorkspaceEntry with TestStep {
 
   override def name: String = nameProperty.get()
   
-  override def run(context: TestStepContext): (ResultType, TestStepContext) = (ResultType.Success, context)
+  override def run(context: TestStepContext): Future[(ResultType, TestStepContext)] = Future.successful((ResultType.Success, context))
 }
 
 
