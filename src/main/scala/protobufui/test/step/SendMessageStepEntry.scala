@@ -6,6 +6,8 @@ import com.google.protobuf.Message
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.gui.workspace.test.TestStepView
 import protobufui.service.source.ClassesContainer.MessageClass
+import protobufui.test.ResultType
+import protobufui.test.ResultType._
 
 /**
  * Created by humblehound on 26.09.15.
@@ -20,9 +22,9 @@ class SendMessageStepEntry extends WorkspaceEntry with TestStep {
 
   override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepMessage.fxml", "SendMessageStep")
 
-  override def run(context: TestStepContext): (TestStepResult, TestStepContext) = (new TestStepResult(ResultType.Success), context)
-
   override def name: String = nameProperty.get()
+  
+  override def run(context: TestStepContext): (ResultType, TestStepContext) = (ResultType.Success, context)
 }
 
 

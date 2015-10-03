@@ -11,8 +11,6 @@ class TestCaseEntry extends WorkspaceEntry {
   override val view: WorkspaceEntryView = new TestCaseView(this)
 
 
-  def gatherTestSteps(): List[TestStep] = children.collect {
-    case t: TestStep => t
-  }
+  def getTestSteps: List[TestStep] = children.collect { case t: TestStep => t }
 
 }

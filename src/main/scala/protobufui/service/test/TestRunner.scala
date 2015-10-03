@@ -2,8 +2,9 @@ package protobufui.service.test
 
 import akka.actor.Actor
 import protobufui.service.test.TestRunner.{Run, TestStepRunResult}
-import protobufui.test.step.ResultType.ResultType
-import protobufui.test.step.{ResultType, TestStep, TestStepContext, TestStepResult}
+import protobufui.test.ResultType
+import protobufui.test.ResultType.ResultType
+import protobufui.test.step.{TestStep, TestStepContext}
 
 
 object TestRunner {
@@ -21,12 +22,12 @@ object TestRunner {
 class TestRunner extends Actor {
   override def receive: Receive = {
     case Run(steps) =>
-      steps.zipWithIndex.foldLeft((TestStepResult(ResultType.Empty), new TestStepContext)) {
-        case ((TestStepResult(ResultType.Failure), ctx), _) => (TestStepResult(ResultType.Failure), ctx)
+      steps.zipWithIndex.foldLeft((ResultType.Empty, new TestStepContext)) {
+        case (r@(ResultType.Failure, ctx), _) => r
 
         case ((result, ctx), (step, idx)) =>
           val (result, newCtx) = step.run(ctx)
-          sender() ! TestStepRunResult(idx, result.result)
+          sender() ! TestStepRunResult(idx, result)
           (result, newCtx)
       }
 

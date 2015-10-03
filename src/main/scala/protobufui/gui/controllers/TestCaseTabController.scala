@@ -13,12 +13,11 @@ import akka.actor.{Actor, ActorRef, Props}
 import ipetoolkit.util.JavaFXDispatcher
 import ipetoolkit.workspace.DetailsController
 import protobufui.Main
-import protobufui.gui.controllers.TestCaseTabController.TestStepResult
 import protobufui.service.test.TestRunner
 import protobufui.service.test.TestRunner.{Run, TestStepRunResult}
-import protobufui.test.TestCaseEntry
-import protobufui.test.step.ResultType._
-import protobufui.test.step.{ResultType, TestStep}
+import protobufui.test.ResultType._
+import protobufui.test.step.TestStepResult
+import protobufui.test.{ResultType, TestCaseEntry}
 
 import scala.collection.JavaConverters._
 
@@ -46,12 +45,12 @@ class TestCaseTabController extends Initializable with DetailsController {
   def testCase = model.asInstanceOf[TestCaseEntry]
 
   def refresh(): Unit = {
-    val steps = testCase.gatherTestSteps().map(x => TestStepResult(x, ResultType.Empty))
+    val steps = testCase.getTestSteps.map(x => TestStepResult(x, ResultType.Empty))
     stepTable.getItems.setAll(steps.asJavaCollection)
   }
 
   def run(): Unit = {
-    val steps = testCase.gatherTestSteps()
+    val steps = testCase.getTestSteps
     stepTable.getItems.setAll(steps.map(x => TestStepResult(x, ResultType.Empty)).asJavaCollection)
     TestCaseTabController.runTests(stepTable)
   }
@@ -60,8 +59,6 @@ class TestCaseTabController extends Initializable with DetailsController {
 }
 
 object TestCaseTabController {
-
-  case class TestStepResult(step: TestStep, result: ResultType)
 
   val statusCellFactory =
     new Callback[TableColumn[TestStepResult, ResultType], TableCell[TestStepResult, ResultType]]() {
