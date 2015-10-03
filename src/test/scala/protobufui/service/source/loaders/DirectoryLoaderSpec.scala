@@ -15,10 +15,11 @@ class DirectoryLoaderSpec(_system: ActorSystem) extends TestKit(_system) with Wo
      def this() = this(ActorSystem("DirectoryLoaderSpec"))
 
      def fixture = new {
+       val s = File.separator
        val parent = TestProbe()
-       val workspaceRoot = new File("test/testWorkspace/")
+       val workspaceRoot = new File(s"test${s}testWorkspace${s}")
        val props = Props(classOf[DirectoryLoader],workspaceRoot)
-       val directory = new File("src/test/resources/protobufui/service/source/")
+       val directory = new File(s"src${s}test${s}resources${s}protobufui${s}service${s}source${s}")
        val className: String = "test.PersonTest$Person2"
      }
 

@@ -28,6 +28,8 @@ libraryDependencies ++= {
   )
 }
 
+mainClass in assembly := Some("protobufui.gui.Main")
+
 PB.protobufSettings
 
 // Run in separate VM, so there are no issues with double initialization of JavaFX
