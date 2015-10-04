@@ -9,15 +9,13 @@ import javafx.scene.control.TableColumn.CellDataFeatures
 import javafx.scene.control.{TableCell, TableColumn, TableView}
 import javafx.util.Callback
 
-import akka.actor.{Actor, ActorRef, Props}
-import ipetoolkit.util.JavaFXDispatcher
 import ipetoolkit.workspace.DetailsController
-import protobufui.Main
 import protobufui.test.ResultType._
-import protobufui.test.step.TestStepResult
+import protobufui.test.step.{TestStepContext, TestStepResult}
 import protobufui.test.{ResultType, TestCaseEntry}
 
 import scala.collection.JavaConverters._
+import scala.concurrent.Future
 
 /**
  * Created by krever on 9/26/15.
@@ -80,21 +78,19 @@ object TestCaseTabController {
       }
     }
 
-  def runTests(stepTable: TableView[TestStepResult]): ActorRef = Main.actorSystem.actorOf(Props(new TestRunController(stepTable)).withDispatcher(JavaFXDispatcher.Id))
-
-  private class TestRunController(stepTable: TableView[TestStepResult]) extends Actor {
-
-    @throws[Exception](classOf[Exception])
-    override def preStart(): Unit = {
-      /*val runner = context.system.actorOf(Props[TestStepsRunner])
-      runner ! Run(stepTable.getItems.asScala.map(_.step).toList)*/
-    }
-
-    override def receive: Receive = ??? /*{ TODO actor wyciety, przerobic na future
-      case SingleStepResult(idx, result) =>
+  def runTests(stepTable: TableView[TestStepResult]): Unit = {
+    import protobufui.Main.actorSystem.dispatcher
+    val steps = stepTable.getItems.asScala.map(_.step)
+    steps.zipWithIndex.foldLeft(Future((ResultType.Empty, new TestStepContext))) {
+      case (args, (step, idx)) =>
+        val newResult = for {
+          (prevResult, ctx) <- args
+          (curResullt, newCtx) <- step.run(ctx)
+        } yield (curResullt, newCtx)
         val curItem = stepTable.getItems.get(idx)
-        stepTable.getItems.set(idx, curItem.copy(result = result))
-    }*/
+        newResult.foreach(x => stepTable.getItems.set(idx, curItem.copy(result = x._1)))
+        newResult
+    }
   }
 
 }
