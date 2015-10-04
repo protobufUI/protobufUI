@@ -8,8 +8,13 @@ import javax.tools.ToolProvider
 
 object Utils {
   def compile(file: File): File = {
-    val javac = ToolProvider.getSystemJavaCompiler
-    javac.run(null, null, null, file.getPath)
+    try {
+      val javac = ToolProvider.getSystemJavaCompiler
+      javac.run(null, null, null, file.getPath)
+    }catch{
+      case e:NullPointerException =>
+        throw new RuntimeException("Check if you are using JDK. JRE does not support runtime compilation", e)
+    }
     file
   }
 
@@ -24,7 +29,7 @@ object Utils {
     else Stream.empty)
 }
 class ClassLoader(rootFile:File){
-  private val rootFileUrl = rootFile.toURI.toURL
+  private val rootFileUrl = new File(rootFile,"classes").toURI.toURL
   val urlClassLoader = URLClassLoader.newInstance(Array(rootFileUrl))
   def loadAndStore(className: String) = {
     val clazz: Class[_] =  urlClassLoader.loadClass(className)

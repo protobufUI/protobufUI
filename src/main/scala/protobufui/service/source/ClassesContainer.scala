@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor
 import java.net.URLClassLoader
 import javafx.beans.{InvalidationListener, Observable}
 import javafx.collections.{FXCollections, ObservableMap}
+import javax.xml.bind.annotation.XmlRootElement
 
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType
 import com.google.protobuf.{MessageLite, Message, Parser}
@@ -42,7 +43,7 @@ object ClassesContainer extends Observable{
     import scala.collection.JavaConverters._
     classes.values().asScala
   }
-
+  @XmlRootElement
   case class MessageClass(clazz: Class[_]) {
     private val defaultInstance = clazz.getMethod("getDefaultInstance").invoke(null).asInstanceOf[Message]
 
@@ -56,6 +57,7 @@ object ClassesContainer extends Observable{
       val builder = defaultInstance.newBuilderForType()
       builder.fillWithDefaults.build()
     }
+    override def toString:String = clazz.getName
   }
 
   implicit class MessageUtil(builder: Message.Builder) {

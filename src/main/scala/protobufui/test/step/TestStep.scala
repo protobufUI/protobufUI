@@ -1,17 +1,12 @@
 package protobufui.test.step
 
-import protobufui.test.step.ResultType.ResultType
+import protobufui.test.ResultType
+import protobufui.test.ResultType.ResultType
 
-/**
- * Created by krever on 9/27/15.
- */
+import scala.concurrent.Future
 
-object ResultType extends Enumeration {
-  type ResultType = Value
-  val Success, Failure, Empty = Value
-}
 
-case class TestStepResult(result: ResultType)
+case class TestStepResult(step: TestStep, result: ResultType)
 
 case class TestStepContext()
 
@@ -19,5 +14,6 @@ trait TestStep {
 
   def name: String
 
-  def run(context: TestStepContext): (TestStepResult, TestStepContext)
+  def run(context: TestStepContext): Future[(ResultType.ResultType, TestStepContext)]
+
 }
