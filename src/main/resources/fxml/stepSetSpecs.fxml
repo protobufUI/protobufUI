@@ -18,23 +18,17 @@
     </padding>
     <center>
         <VBox spacing="10">
-            <GridPane>
-                <padding>
-                    <Insets top="10" bottom="10" left="10" right="10"/>
-                </padding>
+            <GridPane hgap="10" vgap="10">
                 <Label alignment="BASELINE_CENTER" text="Title" />
                 <TextField fx:id="testName" GridPane.columnIndex="1"/>
+                <Button text="Add" onAction="#addNewRow" fx:id="addTableRow" GridPane.columnIndex="2"/>
             </GridPane>
-            <TableView fx:id="specsTable">
-                <columns>
-                    <TableColumn prefWidth="150" text="Property"/>
-                    <TableColumn prefWidth="450" text="Value"/>
-                </columns>
+            <TableView fx:id="specsTable" editable="true">
             </TableView>
             <HBox spacing="10">
-                <Button fx:id="editBtn" text="Edit"/>
-                <Button fx:id="cancelBtn" text="Cancel"/>
-                <Button fx:id="saveBtn" text="Save"/>
+                <Button onAction="#edit" fx:id="editBtn" text="Edit"/>
+                <Button onAction="#cancel" fx:id="cancelBtn" text="Cancel"/>
+                <Button onAction="#save" fx:id="saveBtn" text="Save"/>
                 <Pane HBox.hgrow="ALWAYS"/>
             </HBox>
         </VBox>

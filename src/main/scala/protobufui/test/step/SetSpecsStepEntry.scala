@@ -10,11 +10,14 @@ import protobufui.gui.workspace.test.TestStepView
  */
 @XmlRootElement
 class SetSpecsStepEntry extends WorkspaceEntry with TestStep {
+
+  var propertyValueMap : Map[String, String] = Map()
+
   override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepSetSpecs.fxml", "SetSpecsStepEntry")
 
   override def run(context: TestStepContext): (TestStepResult, TestStepContext) = {
     Thread.sleep(100); (new TestStepResult(ResultType.Success), context)
   }
 
-  override def name: String =  nameProperty.get();
+  override def name: String =  nameProperty.get()
 }

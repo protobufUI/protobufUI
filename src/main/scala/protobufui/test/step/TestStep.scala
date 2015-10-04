@@ -20,5 +20,4 @@ trait TestStep {
   def name: String
 
   def run(context: TestStepContext): (TestStepResult, TestStepContext)
-
 }

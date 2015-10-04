@@ -1,6 +1,6 @@
 package protobufui.test.step
 
-import javax.xml.bind.annotation.XmlRootElement
+import javax.xml.bind.annotation.{XmlElement, XmlRootElement}
 
 import com.google.protobuf.Message
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
@@ -13,9 +13,13 @@ import protobufui.service.source.ClassesContainer.MessageClass
 @XmlRootElement
 class SendMessageStepEntry extends WorkspaceEntry with TestStep {
 
+  @XmlElement
   var ipAddress : String = "192.168.0.1"
+  @XmlElement
   var ipPort : String = "80"
+  @XmlElement
   var messageClass: MessageClass = _
+
   var message: Message = _
 
   override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepMessage.fxml", "SendMessageStep")
