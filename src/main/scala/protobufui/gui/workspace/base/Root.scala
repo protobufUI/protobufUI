@@ -15,7 +15,7 @@ class RootEntry extends WorkspaceEntry {
 
   override val view: WorkspaceEntryView = new RootView(this)
 
-  def getTests: List[TestSuite] = children.collectFirst{case x: MessagesRootEntry => x}.get.children.collect{case x: TestSuite => x}
+  def getTests: List[TestSuite] = children.collectFirst{case x: TestsRootEntry => x}.get.children.collect{case x: TestSuite => x}
 
 }
 
