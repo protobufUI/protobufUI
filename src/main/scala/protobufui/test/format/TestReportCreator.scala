@@ -1,7 +1,8 @@
 package protobufui.test.format
 
-import protobufui.test.TestSuiteResult
-import protobufui.test.format.generated.{Testcase, Testsuite, Testsuites}
+import protobufui.test.{ResultType, TestSuiteResult}
+import protobufui.test.format.generated.{Failure, Testcase, Testsuite, Testsuites}
+import scala.collection.JavaConverters._
 
 /**
  * Created by krever on 10/3/15.
@@ -13,9 +14,16 @@ object TestReportCreator {
     val aTestSuites = new Testsuites
     testSuitesResults.foreach { suiteResult =>
       val aTestSuite = new Testsuite()
+      aTestSuite.setName(suiteResult.suite.getName)
       suiteResult.casesResults.foreach { caseResult =>
         val aTestCase = new Testcase()
         aTestCase.setStatus(caseResult.status.toString)
+        aTestCase.setName(caseResult.testCase.getName)
+        val failures = caseResult
+          .stepsResults
+          .filter(_.result == ResultType.Failure)
+          .map{r => val f = new Failure();f.setContent(r.step.name); f}
+        aTestCase.getFailure.addAll(failures.asJavaCollection)
         aTestSuite.getTestcase.add(aTestCase)
       }
       aTestSuites.getTestsuite.add(aTestSuite)
