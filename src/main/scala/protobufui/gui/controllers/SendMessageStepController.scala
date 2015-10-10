@@ -8,6 +8,7 @@ import javafx.fxml.{FXML, Initializable}
 import javafx.scene.Node
 import javafx.scene.control._
 
+import com.google.protobuf.TextFormat
 import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
 import protobufui.gui.Editable
 import protobufui.service.source.ClassesContainer
@@ -17,7 +18,7 @@ import protobufui.test.step.SendMessageStepEntry
 /**
  * Created by humblehound on 26.09.15.
  */
-class SendMessageController extends Initializable with DetailsController with Editable {
+class SendMessageStepController extends Initializable with DetailsController with Editable {
 
   @FXML var testName: TextField = _
   @FXML var messageArea: TextArea = _
@@ -63,15 +64,14 @@ class SendMessageController extends Initializable with DetailsController with Ed
   }
 
   private def saveFormValuesToTest() = {
-    //    val builder = MessageClass(???).getBuilder
-    //    TextFormat.getParser.merge(messageArea.getText, builder)
-    //
-    //    sendMessageStep.message = builder.build()
     if (sendMessageStep != null) {
       sendMessageStep.nameProperty.setValue(testName.getText)
       sendMessageStep.ipAddress = ipAddress.getText
       sendMessageStep.ipPort = ipPort.getText
       sendMessageStep.messageClass = messageClassPicker.getSelectionModel.getSelectedItem
+      val builder = sendMessageStep.messageClass.getBuilder
+      TextFormat.getParser.merge(messageArea.getText, builder)
+     sendMessageStep.message = builder.build()
     }
   }
 

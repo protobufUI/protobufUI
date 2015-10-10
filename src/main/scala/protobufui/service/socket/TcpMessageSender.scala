@@ -2,7 +2,7 @@ package protobufui.service.socket
 
 import java.net.InetSocketAddress
 
-import akka.actor.{Actor, ActorLogging, ActorRef}
+import akka.actor._
 import akka.io.Tcp._
 import akka.io.{IO, Tcp}
 import akka.util.ByteString
@@ -46,11 +46,31 @@ class TcpMessageSender(address: InetSocketAddress) extends Actor with ActorLoggi
         case _: ConnectionClosed =>
           context stop self
         case m =>
-          log.warning("Invalid message received, ignored.Msg: $m");
+          log.warning(s"Invalid message received, ignored.Msg: $m");
       }
 
     case m =>
       log.warning(s"Invalid message, MessageSender not connected. Msg: $m")
+      context.stop(self)
+  }
+
+}
+
+class MessageSenderSupervisor(address: InetSocketAddress, message: MessageLite, onResponse: ByteString => Unit, onFailure: () => Unit) extends Actor {
+
+  val tcpMessageSender = context.actorOf(Props(new TcpMessageSender(address)))
+
+  context.watch(tcpMessageSender)
+
+  override def receive: Receive = {
+    case TcpMessageSenderReady =>
+      tcpMessageSender ! SendMessage(message)
+    case Response(data) =>
+      onResponse(data)
+      context.stop(self)
+    case Terminated(`tcpMessageSender`) =>
+      onFailure()
+      context.stop(self)
   }
 
 }

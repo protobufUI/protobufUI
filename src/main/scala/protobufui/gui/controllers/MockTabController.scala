@@ -13,7 +13,7 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination, KeyEvent
 import akka.actor._
 import com.google.protobuf.{MessageLite, TextFormat, UnknownFieldSet}
 import ipetoolkit.util.JavaFXDispatcher
-import ipetoolkit.workspace.DetailsController
+import ipetoolkit.workspace.{WorkspaceEntry, DetailsController}
 import protobufui.Main
 import protobufui.gui.controllers.MockTabController.{Start, Stop}
 import protobufui.gui.workspace.mock.MockView
@@ -24,10 +24,12 @@ import protobufui.service.source.ClassesContainer.MessageClass
 
 import scala.collection.JavaConverters._
 
+//TODO nie widzimy jesli mockowi nie uda sie zbindowac do portu
+//TODO wyswietlanie obsluzonych requestow
 class MockTabController extends Initializable with InvalidationListener with DetailsController {
 
   val mockSupervisor = Main.actorSystem.actorOf(Props(new MockSupervisor).withDispatcher(JavaFXDispatcher.Id))
-  val scriptCtx = new ScalaScriptingCtx
+  lazy val scriptCtx = new ScalaScriptingCtx //TODO trwa długo i przywiesi aplikacje przy pierwszym uzyciu(czyli w losowym momencie)
   @FXML var nameField: TextField = _
   @FXML var portField: TextField = _
   @FXML var responseClassCombo: ComboBox[MessageClass] = _
@@ -112,8 +114,8 @@ class MockTabController extends Initializable with InvalidationListener with Det
     result
   }
 
-  def setWorkspaceEntry(entry: MockView) = {
-
+  override def setModel(entry: WorkspaceEntry) = {
+    super.setModel(entry)
     nameField.textProperty().bindBidirectional(model.view.nameProperty)
   }
 
@@ -132,6 +134,17 @@ class MockTabController extends Initializable with InvalidationListener with Det
     val candidates = new util.ArrayList[CharSequence]()
     scriptCtx.completion.complete(lines.takeRight(1).head, lines.takeRight(1).head.length, candidates)
     completionListView.getItems.setAll(candidates.asScala.map(_.toString): _*)
+  }
+
+  @FXML
+  def literalSelected(): Unit = {
+    completionListView.setVisible(false)
+    responseTextArea.setText(responseClassCombo.getValue.getInstanceFilledWithDefaults.toString)
+  }
+  @FXML
+  def scriptSelected(): Unit = {
+    completionListView.setVisible(true)
+    //TODO wstawic przykładowy działający skrypt
   }
 
   private class MockSupervisor extends Actor with ActorLogging {

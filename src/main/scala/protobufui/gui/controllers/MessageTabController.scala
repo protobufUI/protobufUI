@@ -5,15 +5,14 @@ import java.util.ResourceBundle
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.{ComboBox, TextArea, TextField}
 
-import akka.actor.{Actor, Props, Terminated}
+import akka.actor.Props
 import akka.util.ByteString
-import com.google.protobuf.{Message, MessageLite, TextFormat}
+import com.google.protobuf.{Message, TextFormat}
 import ipetoolkit.util.JavaFXDispatcher
 import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
 import protobufui.Main
 import protobufui.service.message.MessageEntry
-import protobufui.service.socket.TcpMessageSender
-import protobufui.service.socket.TcpMessageSender._
+import protobufui.service.socket.MessageSenderSupervisor
 import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
 
@@ -25,21 +24,21 @@ class MessageTabController extends Initializable with DetailsController {
   @FXML var hostnameField: TextField = _
   @FXML var portField: TextField = _
   @FXML var requestArea: TextArea = _
-  @FXML var responseTypeCombo: ComboBox[MessageClass] = _
+  @FXML var responseTypeCombo: ComboBox[MessageClass] = _ //TODO nie zawiera UnknownFieldSet a powinien
   @FXML var responseArea: TextArea = _
 
   var messageEntry: MessageEntry = _
 
   override def initialize(location: URL, resources: ResourceBundle): Unit = {
     import scala.collection.JavaConverters._
-    responseTypeCombo.getItems.setAll(ClassesContainer.getClasses.asJavaCollection)
+    responseTypeCombo.getItems.setAll(ClassesContainer.getClasses.asJavaCollection) //TODO zasubskrybowac sie na ClassContainer
   }
 
   def sendMessage(): Unit = {
     val address = new InetSocketAddress(hostnameField.getText, portField.getText.toInt)
     val requestBuilder = messageEntry.messageClass.getBuilder
     TextFormat.getParser.merge(requestArea.getText, requestBuilder)
-    Main.actorSystem.actorOf(Props(new MessageSenderSupervisor(address, requestBuilder.build())).withDispatcher(JavaFXDispatcher.Id))
+    Main.actorSystem.actorOf(Props(new MessageSenderSupervisor(address, requestBuilder.build(), onResponse, onSendFailed)).withDispatcher(JavaFXDispatcher.Id))
   }
 
   def onResponse(response: ByteString) = {
@@ -58,23 +57,5 @@ class MessageTabController extends Initializable with DetailsController {
     requestArea.setText(newDefaultRequest)
   }
 
-  class MessageSenderSupervisor(address: InetSocketAddress, message: MessageLite) extends Actor {
-
-    val tcpMessageSender = context.actorOf(Props(new TcpMessageSender(address)))
-
-    context.watch(tcpMessageSender)
-
-    override def receive: Receive = {
-      case TcpMessageSenderReady =>
-        tcpMessageSender ! SendMessage(message)
-      case Response(data) =>
-        onResponse(data)
-        context.stop(self)
-      case Terminated(`tcpMessageSender`) =>
-        onSendFailed()
-        context.stop(self)
-    }
-
-  }
 
 }
