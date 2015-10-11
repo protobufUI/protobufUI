@@ -37,7 +37,7 @@ class SendMessageStepEntry extends WorkspaceEntry with TestStep {
     val address = new InetSocketAddress(ipAddress, ipPort.toInt)
 
     def onResponse(responseBytes: ByteString):Unit = {
-      val response: MessageLite = UnknownFieldSet.getDefaultInstance //TODO
+      val response: MessageLite = UnknownFieldSet.parseFrom(responseBytes.toArray)
       promise.complete(scala.util.Success((ResultType.Success, context.addResponse(name, response))))
     }
     def onSendFailed():Unit = {
