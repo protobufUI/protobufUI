@@ -34,7 +34,7 @@ class ClassesLoader(workspaceRoot: File) extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case LoadWorkspace =>
-      workspaceLoader ! Load
+      workspaceLoader ! Load(null)
     case Put(file) if file.isDirectory =>
       directoryLoader ! Load(file)
     case Put(file) if file.getName.endsWith(".jar") =>

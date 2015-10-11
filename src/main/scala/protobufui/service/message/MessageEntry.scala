@@ -52,7 +52,7 @@ class MessageEntry extends WorkspaceEntry {
   }
   def getMessageClass: MessageClass = this.messageClass
 
-  @XmlElement
+  @XmlElement(name = "messageClass")
   def setMessageClassName(msgClassName:String) = {
     this.messageClass = ClassesContainer.getClass(msgClassName)
   }

@@ -80,7 +80,7 @@ class SendMessageStepController extends Initializable with DetailsController wit
     ipPort.setText(sendMessageStep.ipPort)
     testName.setText(sendMessageStep.name)
     messageClassPicker.getSelectionModel.select(sendMessageStep.messageClass)
-    //    messageArea.setText(sendMessageStep.message.toString)
+    if(sendMessageStep.message!= null) messageArea.setText(sendMessageStep.message.toString)
   }
 
   @FXML
