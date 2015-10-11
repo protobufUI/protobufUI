@@ -20,8 +20,7 @@ class SetSpecsStepEntry extends WorkspaceEntry with TestStep {
   override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepSetSpecs.fxml", "SetSpecsStepEntry")
 
   override def run(context: TestStepContext): Future[(ResultType, TestStepContext)] = {
-    Thread.sleep(100)
-    Future.successful((ResultType.Success, context))
+    Future.successful((ResultType.Success, context.addProperties(propertyValueMap)))
   }
 
   override def name: String =  nameProperty.get()

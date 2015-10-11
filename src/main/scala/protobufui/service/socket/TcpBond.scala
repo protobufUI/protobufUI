@@ -8,11 +8,8 @@ import akka.io.{IO, Tcp}
 import protobufui.service.socket.TcpBond.{BindingFailed, PeerConnected}
 
 object TcpBond {
-
   case class PeerConnected(connection: ActorRef, connectedMsg: Connected)
-
   case class BindingFailed(address: InetSocketAddress)
-
 }
 
 class TcpBond(address: InetSocketAddress) extends Actor with ActorLogging {

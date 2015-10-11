@@ -28,5 +28,4 @@ class TestStepView(workspaceEntry: WorkspaceEntry, override val detailsPath: Str
     })
     Some(new ContextMenu(rename, delete))
   }
-
 }
