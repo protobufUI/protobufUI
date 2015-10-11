@@ -1,14 +1,10 @@
 package protobufui.service.source
 
-import java.io.File
-import java.lang.reflect.Constructor
-import java.net.URLClassLoader
 import javafx.beans.{InvalidationListener, Observable}
 import javafx.collections.{FXCollections, ObservableMap}
-import javax.xml.bind.annotation.XmlRootElement
 
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType
-import com.google.protobuf.{MessageLite, Message, Parser}
+import com.google.protobuf.{Message, MessageLite, Parser}
 
 import scala.collection.JavaConverters._
 
@@ -32,6 +28,13 @@ object ClassesContainer extends Observable{
     }
   }
 
+  def putClassWOInvalidation(clazz: (String, Class[_])) = {
+    if (classOf[MessageLite].isAssignableFrom(clazz._2)) {
+      classes.put(clazz._1, new MessageClass(clazz._2))
+    }
+  }
+
+
   def getClass(clazzName: String): MessageClass = classes.get(clazzName)
 
   def getInstanceOf(clazzName: String): Any = {
@@ -43,7 +46,6 @@ object ClassesContainer extends Observable{
     import scala.collection.JavaConverters._
     classes.values().asScala
   }
-  @XmlRootElement
   case class MessageClass(clazz: Class[_]) {
     private val defaultInstance = clazz.getMethod("getDefaultInstance").invoke(null).asInstanceOf[Message]
 

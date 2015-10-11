@@ -14,7 +14,7 @@ class WorkspaceLoader(workspaceRoot: File) extends Actor with ActorLogging {
             .map(_.getAbsolutePath)
             .map(_.replace(workspaceRoot.getAbsolutePath+File.separator+"classes",""))
             .map(_.replace(File.separator,".").substring(1).replace(".class",""))
-            .foreach(classLoader.loadAndStore)
+            .foreach(classLoader.loadAndStoreWOInvalidation)
           context.parent ! Loaded
   }
 }

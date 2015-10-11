@@ -36,7 +36,7 @@ class MessageTabController extends Initializable with DetailsController {
 
   def sendMessage(): Unit = {
     val address = new InetSocketAddress(hostnameField.getText, portField.getText.toInt)
-    val requestBuilder = messageEntry.messageClass.getBuilder
+    val requestBuilder = messageEntry.getMessageClass.getBuilder
     TextFormat.getParser.merge(requestArea.getText, requestBuilder)
     Main.actorSystem.actorOf(Props(new MessageSenderSupervisor(address, requestBuilder.build(), onResponse, onSendFailed)).withDispatcher(JavaFXDispatcher.Id))
   }
@@ -53,8 +53,7 @@ class MessageTabController extends Initializable with DetailsController {
 
   override def setModel(entry: WorkspaceEntry) = {
     this.messageEntry = entry.asInstanceOf[MessageEntry]
-    val newDefaultRequest = TextFormat.printToString(messageEntry.messageClass.getInstanceFilledWithDefaults)
-    requestArea.setText(newDefaultRequest)
+    messageEntry.initRequestArea(requestArea)
   }
 
 

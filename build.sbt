@@ -9,7 +9,7 @@ organization := "pl.protobufui"
 
 scalaVersion := "2.11.7"
 
-val ipeVersion = "0.1.10-SNAPSHOT"
+val ipeVersion = "0.1.11-SNAPSHOT"
 resolvers += Resolver.sonatypeRepo("public")
 
 val akkaVersion = "2.3.11"

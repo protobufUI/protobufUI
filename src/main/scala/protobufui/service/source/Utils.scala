@@ -19,7 +19,7 @@ object Utils {
   }
 
   implicit def createFileWithContent(file: File, content: String): Unit = {
-    file.getParentFile().mkdirs
+    file.getParentFile.mkdirs
     val openOption: OpenOption = StandardOpenOption.CREATE
     Files.write(file.toPath, content.getBytes(StandardCharsets.UTF_8), openOption)
   }
@@ -34,5 +34,9 @@ class ClassLoader(rootFile:File){
   def loadAndStore(className: String) = {
     val clazz: Class[_] =  urlClassLoader.loadClass(className)
     ClassesContainer.putClass(className, clazz)
+  }
+  def loadAndStoreWOInvalidation(className: String) = {
+    val clazz: Class[_] =  urlClassLoader.loadClass(className)
+    ClassesContainer.putClassWOInvalidation(className, clazz)
   }
 }

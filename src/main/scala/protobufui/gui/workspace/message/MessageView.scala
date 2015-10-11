@@ -7,9 +7,9 @@ import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.service.source.ClassesContainer.MessageClass
 
 
-class MessageView(workspaceEntry: WorkspaceEntry, messageClass: MessageClass) extends WorkspaceEntryView {
+class MessageView(workspaceEntry: WorkspaceEntry) extends WorkspaceEntryView {
 
-  override val nameProperty: StringProperty = new SimpleStringProperty(messageClass.clazz.getName)
+  override val nameProperty: StringProperty = new SimpleStringProperty()
 
   override def contextMenu: Option[ContextMenu] = None
 
