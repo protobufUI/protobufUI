@@ -6,7 +6,7 @@ import javafx.scene.control.{ContextMenu, Menu, MenuItem}
 
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.test.TestCaseEntry
-import protobufui.test.step.{SendMessageStepEntry, SetSpecsStepEntry, ValidateStepEntry}
+import protobufui.test.step.{ScriptStepEntry, SetSpecsStepEntry, SendMessageStepEntry}
 import protobufui.util.dialog.Dialog
 
 class TestCaseView(workspaceEntry: TestCaseEntry) extends WorkspaceEntryView {
@@ -39,7 +39,7 @@ class TestCaseView(workspaceEntry: TestCaseEntry) extends WorkspaceEntryView {
 
     addEntryOnAction(messageStep, new SendMessageStepEntry)
     addEntryOnAction(setSpecsStep, new SetSpecsStepEntry)
-    addEntryOnAction(validateStep, new ValidateStepEntry)
+    addEntryOnAction(validateStep, new ScriptStepEntry)
 
     Some(new ContextMenu(newTestStep, rename, delete))
   }
