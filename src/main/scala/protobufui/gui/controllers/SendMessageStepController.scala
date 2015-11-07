@@ -9,7 +9,8 @@ import javafx.scene.Node
 import javafx.scene.control._
 
 import com.google.protobuf.TextFormat
-import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
+import ipetoolkit.details.DetailsController
+import ipetoolkit.workspace.WorkspaceEntry
 import protobufui.gui.Editable
 import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
@@ -65,7 +66,7 @@ class SendMessageStepController extends Initializable with DetailsController wit
 
   private def saveFormValuesToTest() = {
     if (sendMessageStep != null) {
-      sendMessageStep.nameProperty.setValue(testName.getText)
+      sendMessageStep.setName(testName.getText)
       sendMessageStep.ipAddress = ipAddress.getText
       sendMessageStep.ipPort = ipPort.getText
       sendMessageStep.messageClass = messageClassPicker.getSelectionModel.getSelectedItem
@@ -78,7 +79,7 @@ class SendMessageStepController extends Initializable with DetailsController wit
   private def loadFormValuesFromTest(): Unit ={
     ipAddress.setText(sendMessageStep.ipAddress)
     ipPort.setText(sendMessageStep.ipPort)
-    testName.setText(sendMessageStep.name)
+    testName.setText(sendMessageStep.getName)
     messageClassPicker.getSelectionModel.select(sendMessageStep.messageClass)
     if(sendMessageStep.message!= null) messageArea.setText(sendMessageStep.message.toString)
   }

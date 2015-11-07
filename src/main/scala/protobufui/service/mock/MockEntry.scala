@@ -2,10 +2,13 @@ package protobufui.service.mock
 
 import javax.xml.bind.annotation.XmlRootElement
 
-import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
-import protobufui.gui.workspace.mock.MockView
+import ipetoolkit.workspace.WorkspaceEntry
 
 @XmlRootElement
 class MockEntry extends WorkspaceEntry {
-  override val view: WorkspaceEntryView = new MockView(this)
+
+  def this(name:String){
+    this()
+    setName(name)
+  }
 }

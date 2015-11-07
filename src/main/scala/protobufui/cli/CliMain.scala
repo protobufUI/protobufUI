@@ -48,7 +48,7 @@ object CliMain {
 
     //Thread.sleep(10000)
     import Main.actorSystem.dispatcher
-    val testSuites = if (config.suites.nonEmpty) rootEntry.getTests.filter(s => config.suites.contains(s.nameProperty.getValue)) else rootEntry.getTests
+    val testSuites = if (config.suites.nonEmpty) rootEntry.getTests.filter(s => config.suites.contains(s.getName)) else rootEntry.getTests
 
     Console.out.println("Running Tests")
     val suitesResultsFututres = testSuites.map(_.run(Main.actorSystem))

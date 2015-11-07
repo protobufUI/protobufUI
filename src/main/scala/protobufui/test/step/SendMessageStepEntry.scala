@@ -6,9 +6,8 @@ import javax.xml.bind.annotation.{XmlElement, XmlRootElement}
 import akka.actor.Props
 import akka.util.ByteString
 import com.google.protobuf.{Message, MessageLite, UnknownFieldSet}
-import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
+import ipetoolkit.workspace.WorkspaceEntry
 import protobufui.Main
-import protobufui.gui.workspace.test.TestStepView
 import protobufui.service.socket.MessageSenderSupervisor
 import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
@@ -23,6 +22,11 @@ import scala.concurrent.{Future, Promise}
 @XmlRootElement
 class SendMessageStepEntry extends WorkspaceEntry with TestStep {
 
+  def this(name:String){
+    this()
+    setName(name)
+  }
+
   @XmlElement
   var ipAddress : String = "192.168.0.1"
   @XmlElement
@@ -30,9 +34,6 @@ class SendMessageStepEntry extends WorkspaceEntry with TestStep {
   var messageClass: MessageClass = _
   var message: Message = _
 
-  override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepMessage.fxml", "SendMessageStep")
-
-  override def name: String = nameProperty.get()
   
   override def run(context: TestStepContext): Future[(ResultType, TestStepContext)] = {
     val promise = Promise[(ResultType, TestStepContext)]()

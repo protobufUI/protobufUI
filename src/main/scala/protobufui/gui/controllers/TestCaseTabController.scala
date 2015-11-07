@@ -9,7 +9,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures
 import javafx.scene.control.{TableCell, TableColumn, TableView}
 import javafx.util.Callback
 
-import ipetoolkit.workspace.DetailsController
+import ipetoolkit.details.DetailsController
 import protobufui.test.ResultType._
 import protobufui.test.step.{TestStepContext, TestStepResult}
 import protobufui.test.{ResultType, TestCaseEntry}
@@ -30,7 +30,7 @@ class TestCaseTabController extends Initializable with DetailsController {
 
   override def initialize(location: URL, resources: ResourceBundle): Unit = {
     nameColumn.setCellValueFactory(new Callback[CellDataFeatures[TestStepResult, String], ObservableValue[String]] {
-      override def call(param: CellDataFeatures[TestStepResult, String]): ObservableValue[String] = new SimpleStringProperty(param.getValue.step.name)
+      override def call(param: CellDataFeatures[TestStepResult, String]): ObservableValue[String] = new SimpleStringProperty(param.getValue.step.getName)
     })
     statusColumn.setCellValueFactory(new Callback[CellDataFeatures[TestStepResult, ResultType], ObservableValue[ResultType]] {
       override def call(param: CellDataFeatures[TestStepResult, ResultType]): ObservableValue[ResultType] = new SimpleObjectProperty[ResultType](param.getValue.result)

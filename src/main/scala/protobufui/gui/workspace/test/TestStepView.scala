@@ -1,17 +1,14 @@
 package protobufui.gui.workspace.test
 
-import javafx.beans.property.{SimpleStringProperty, StringProperty}
 import javafx.event.{ActionEvent, EventHandler}
-import javafx.scene.control.{MenuItem, ContextMenu}
+import javafx.scene.control.{ContextMenu, MenuItem}
 
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.util.dialog.Dialog
 
-class TestStepView(workspaceEntry: WorkspaceEntry, override val detailsPath: String, val name: String) extends WorkspaceEntryView {
+class TestStepView(val model: WorkspaceEntry, val detailsFxmlPath: String, val name: String) extends WorkspaceEntryView {
 
-  override val nameProperty: StringProperty = new SimpleStringProperty(name)
-
-  override def model: WorkspaceEntry = workspaceEntry
+  override val detailsPath = Some(detailsFxmlPath)
 
   override def contextMenu: Option[ContextMenu] = {
     val rename = new MenuItem("Rename")
@@ -23,9 +20,11 @@ class TestStepView(workspaceEntry: WorkspaceEntry, override val detailsPath: Str
     val delete = new MenuItem("Delete")
     delete.setOnAction(new EventHandler[ActionEvent] {
       override def handle(event: ActionEvent): Unit = {
-        model.delete()
+        model.remove()
       }
     })
     Some(new ContextMenu(rename, delete))
   }
+
+  override def childrenToViews: PartialFunction[WorkspaceEntry, WorkspaceEntryView] = PartialFunction.empty
 }

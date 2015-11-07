@@ -7,9 +7,10 @@ import java.util.ResourceBundle
 import javafx.event.EventHandler
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.control.{ListView, TextArea}
-import javafx.scene.input.{KeyEvent, KeyCombination, KeyCode, KeyCodeCombination}
+import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination, KeyEvent}
 
-import ipetoolkit.workspace.{WorkspaceEntry, DetailsController}
+import ipetoolkit.details.DetailsController
+import ipetoolkit.workspace.WorkspaceEntry
 import protobufui.service.script.ScalaScriptingCtx
 import protobufui.test.step.{ScriptStepEntry, TestStepContext}
 

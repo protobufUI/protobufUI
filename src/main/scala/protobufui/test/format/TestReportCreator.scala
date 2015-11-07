@@ -1,7 +1,8 @@
 package protobufui.test.format
 
-import protobufui.test.{ResultType, TestSuiteResult}
 import protobufui.test.format.generated.{Failure, Testcase, Testsuite, Testsuites}
+import protobufui.test.{ResultType, TestSuiteResult}
+
 import scala.collection.JavaConverters._
 
 /**
@@ -22,7 +23,7 @@ object TestReportCreator {
         val failures = caseResult
           .stepsResults
           .filter(_.result == ResultType.Failure)
-          .map{r => val f = new Failure();f.setContent(r.step.name); f}
+          .map{r => val f = new Failure();f.setContent(r.step.getName); f}
         aTestCase.getFailure.addAll(failures.asJavaCollection)
         aTestSuite.getTestcase.add(aTestCase)
       }

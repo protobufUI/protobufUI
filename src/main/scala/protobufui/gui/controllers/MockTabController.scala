@@ -12,11 +12,11 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination, KeyEvent
 
 import akka.actor._
 import com.google.protobuf.{MessageLite, TextFormat, UnknownFieldSet}
+import ipetoolkit.details.DetailsController
 import ipetoolkit.util.JavaFXDispatcher
-import ipetoolkit.workspace.{WorkspaceEntry, DetailsController}
+import ipetoolkit.workspace.WorkspaceEntry
 import protobufui.Main
 import protobufui.gui.controllers.MockTabController.{Start, Stop}
-import protobufui.gui.workspace.mock.MockView
 import protobufui.service.mock.{Mock, MockDefinition}
 import protobufui.service.script.ScalaScriptingCtx
 import protobufui.service.source.ClassesContainer
@@ -116,7 +116,8 @@ class MockTabController extends Initializable with InvalidationListener with Det
 
   override def setModel(entry: WorkspaceEntry) = {
     super.setModel(entry)
-    nameField.textProperty().bindBidirectional(model.view.nameProperty)
+    //nameField.textProperty().bindBidirectional(model.view.nameProperty)
+    //TODO SAVE BUTTON !!
   }
 
 

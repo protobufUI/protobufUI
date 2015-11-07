@@ -10,7 +10,8 @@ import javafx.scene.control.TableColumn.CellEditEvent
 import javafx.scene.control._
 import javafx.scene.control.cell.{PropertyValueFactory, TextFieldTableCell}
 
-import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
+import ipetoolkit.details.DetailsController
+import ipetoolkit.workspace.WorkspaceEntry
 import protobufui.gui.Editable
 import protobufui.test.step.{PropertyKeyValue, SetSpecsStepEntry}
 

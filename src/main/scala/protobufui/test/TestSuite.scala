@@ -3,14 +3,17 @@ package protobufui.test
 import javax.xml.bind.annotation.XmlRootElement
 
 import akka.actor.ActorSystem
-import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
-import protobufui.gui.workspace.test.TestSuiteView
+import ipetoolkit.workspace.WorkspaceEntry
 
 import scala.concurrent.Future
 
 @XmlRootElement
 class TestSuite extends WorkspaceEntry {
-  override val view: WorkspaceEntryView = new TestSuiteView(this)
+
+  def this(name:String){
+    this()
+    setName(name)
+  }
 
   def run(actorSystem: ActorSystem): Future[TestSuiteResult] = {
     import actorSystem.dispatcher

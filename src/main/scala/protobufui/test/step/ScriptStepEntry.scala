@@ -2,8 +2,7 @@ package protobufui.test.step
 
 import javax.xml.bind.annotation.{XmlElement, XmlRootElement}
 
-import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
-import protobufui.gui.workspace.test.TestStepView
+import ipetoolkit.workspace.WorkspaceEntry
 import protobufui.service.script.ScalaScriptingCtx
 import protobufui.test.ResultType
 import protobufui.test.ResultType._
@@ -16,12 +15,14 @@ import scala.util.{Failure, Success, Try}
  */
 @XmlRootElement
 class ScriptStepEntry extends WorkspaceEntry with TestStep {
-  override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepScript.fxml", "ValidateStepEntry")
+
+  def this(name:String){
+    this()
+    setName(name)
+  }
 
   @XmlElement
   var script = ""
-
-  override def name: String = nameProperty.get()
 
   override def run(context: TestStepContext): Future[(ResultType, TestStepContext)] = {
     import scala.concurrent.ExecutionContext.Implicits.global

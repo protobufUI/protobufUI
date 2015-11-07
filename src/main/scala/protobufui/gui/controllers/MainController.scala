@@ -12,10 +12,9 @@ import javafx.scene.layout.{BorderPane, HBox, StackPane}
 
 import ipetoolkit.details.DetailsTabPaneManager
 import ipetoolkit.workspace.WorkspaceManagement.{LoadOrNewWorkspace, SaveWorkspace}
-import ipetoolkit.workspace.{WorkspaceEntryView, WorkspaceManager}
-import protobufui.Globals
-import protobufui.Main
-import protobufui.gui.workspace.base.RootEntry
+import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView, WorkspaceManager}
+import protobufui.{Globals, Main}
+import protobufui.gui.workspace.base.{RootEntry, RootEntryView}
 
 
 class MainController extends Initializable {
@@ -37,11 +36,13 @@ class MainController extends Initializable {
 
   val workspaceFileName = "workspace.xml"
 
+  def workspaceFileDir = Globals.getProperty(Globals.Keys.workspaceRoot).get + File.separator + workspaceFileName
+
   override def initialize(location: URL, resources: ResourceBundle): Unit = {
     import Main.eventBus
     workspaceTreeView.setShowRoot(false)
     val wm = Main.actorSystem.actorOf(WorkspaceManager.props(workspaceTreeView))
-    wm ! LoadOrNewWorkspace(Globals.getProperty(Globals.Keys.workspaceRoot).get + File.separator + workspaceFileName, RootEntry.createRootEntryWithSubRoots())
+    wm ! LoadOrNewWorkspace(workspaceFileDir, RootEntry.createRootEntryWithSubRoots(), (model: WorkspaceEntry) => new RootEntryView(model))
     Main.actorSystem.actorOf(DetailsTabPaneManager.props(detailsTabPane))
     initExpandingResultView()
 

@@ -1,7 +1,22 @@
-import sbt.Keys._
 import sbtprotobuf.{ProtobufPlugin => PB}
 
-name := "protobufUI"
+lazy val root = (project in file("."))
+  .aggregate(cli, gui, core, model)
+  .enablePlugins(BuildInfoPlugin)
+  .settings(
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,
+      "jarName" ->  s"${name.value}-${version.value}.jar"
+    ),
+    buildInfoPackage := "packageinfo",
+    buildInfoOptions += BuildInfoOption.BuildTime
+  )
+
+lazy val cli = (project in file("protobufui-cli")).dependsOn(core, model)
+lazy val gui = (project in file("protobufui-gui")).dependsOn(core, model)
+lazy val core = (project in file("protobufui-core")).dependsOn(model)
+lazy val model = project in file("protobufui-model")
+
+
 
 version := "1.0"
 
@@ -9,8 +24,7 @@ organization := "pl.protobufui"
 
 scalaVersion := "2.11.7"
 
-val ipeVersion = "0.1.11-SNAPSHOT"
-resolvers += Resolver.sonatypeRepo("public")
+val ipeVersion = "0.1.12-SNAPSHOT"
 
 val akkaVersion = "2.3.11"
 
@@ -44,14 +58,4 @@ test in assembly := {}
 mainClass in assembly := Some("protobufui.Main")
 
 assemblyJarName in assembly := s"${name.value}-${version.value}.jar"
-
-lazy val root = (project in file(".")).
-  enablePlugins(BuildInfoPlugin).
-  settings(
-    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,
-      "jarName" ->  s"${name.value}-${version.value}.jar"
-    ),
-    buildInfoPackage := "packageinfo",
-    buildInfoOptions += BuildInfoOption.BuildTime
-  )
 

@@ -2,8 +2,7 @@ package protobufui.test.step
 
 import javax.xml.bind.annotation.XmlRootElement
 
-import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
-import protobufui.gui.workspace.test.TestStepView
+import ipetoolkit.workspace.WorkspaceEntry
 import protobufui.test.ResultType
 import protobufui.test.ResultType.ResultType
 
@@ -15,13 +14,15 @@ import scala.concurrent.Future
 @XmlRootElement
 class SetSpecsStepEntry extends WorkspaceEntry with TestStep {
 
-  var propertyValueMap : Map[String, String] = Map()
+  def this(name:String){
+    this()
+    setName(name)
+  }
 
-  override val view: WorkspaceEntryView = new TestStepView(this, "/fxml/stepSetSpecs.fxml", "SetSpecsStepEntry")
+  var propertyValueMap : Map[String, String] = Map()
 
   override def run(context: TestStepContext): Future[(ResultType, TestStepContext)] = {
     Future.successful((ResultType.Success, context.addProperties(propertyValueMap)))
   }
 
-  override def name: String =  nameProperty.get()
 }

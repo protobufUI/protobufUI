@@ -3,8 +3,7 @@ package protobufui.test
 import javax.xml.bind.annotation.XmlRootElement
 
 import akka.actor.ActorSystem
-import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
-import protobufui.gui.workspace.test.TestCaseView
+import ipetoolkit.workspace.WorkspaceEntry
 import protobufui.test.step.{TestStep, TestStepContext, TestStepResult}
 
 import scala.collection.mutable.ListBuffer
@@ -12,7 +11,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @XmlRootElement
 class TestCaseEntry extends WorkspaceEntry {
-  override val view: WorkspaceEntryView = new TestCaseView(this)
+
+  def this(name:String){
+    this()
+    setName(name)
+  }
 
   def run(actorSystem: ActorSystem): Future[TestCaseResult] = {
     import actorSystem.dispatcher

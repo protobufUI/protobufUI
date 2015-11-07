@@ -17,7 +17,7 @@ case class TestStepContext(stepResponses: Map[String, MessageLite] = Map(), prop
 
 trait TestStep {
 
-  def name: String
+  def getName: String
 
   def run(context: TestStepContext): Future[(ResultType.ResultType, TestStepContext)]
 

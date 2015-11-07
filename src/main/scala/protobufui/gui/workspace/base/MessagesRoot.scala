@@ -1,7 +1,6 @@
 package protobufui.gui.workspace.base
 
 import java.io.File
-import javafx.beans.property.{SimpleStringProperty, StringProperty}
 import javafx.beans.{InvalidationListener, Observable}
 import javafx.event.{ActionEvent, EventHandler}
 import javafx.scene.control.{ContextMenu, MenuItem}
@@ -11,8 +10,8 @@ import javax.xml.bind.annotation.XmlRootElement
 
 import akka.actor.Props
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
-import protobufui.Globals
-import protobufui.Main
+import protobufui.{Globals, Main}
+import protobufui.gui.workspace.message.MessageView
 import protobufui.service.message.MessageEntry
 import protobufui.service.source.ClassesLoader.{LoadWorkspace, Put}
 import protobufui.service.source.{ClassesContainer, ClassesLoader}
@@ -22,20 +21,18 @@ import scala.language.implicitConversions
 
 @XmlRootElement
 class MessagesRootEntry extends WorkspaceEntry {
-  override val view: WorkspaceEntryView = new MessagesRootView(this)
+  setName("Messages")
 }
 
 class MessagesRootView(val model: WorkspaceEntry) extends WorkspaceEntryView with InvalidationListener {
   private val workspaceRoot: File = new File(Globals.getProperty(Globals.Keys.workspaceRoot).get)
   val classesLoader = Main.actorSystem.actorOf(Props(new ClassesLoader(workspaceRoot)))
 
-  override val nameProperty: StringProperty = new SimpleStringProperty("Messages")
-
   classesLoader ! LoadWorkspace
 
   ClassesContainer.addListener(this)
   override def invalidated(observable: Observable): Unit = {
-    ClassesContainer.getClasses.foreach { x => addWorkSpaceEntry(new MessageEntry(x)) }
+    ClassesContainer.getClasses.foreach { x => addChild(new MessageEntry(x)) }
   }
 
   override def contextMenu: Option[ContextMenu] = {
@@ -77,5 +74,9 @@ class MessagesRootView(val model: WorkspaceEntry) extends WorkspaceEntryView wit
       )
       directorySelector
     }
+  }
+
+  override def childrenToViews: PartialFunction[WorkspaceEntry, WorkspaceEntryView] = {
+    case x: MessageEntry => new MessageView(x)
   }
 }

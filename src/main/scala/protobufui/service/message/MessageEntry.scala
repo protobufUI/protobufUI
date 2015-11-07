@@ -4,8 +4,7 @@ import javafx.scene.control.TextArea
 import javax.xml.bind.annotation.{XmlElement, XmlRootElement, XmlTransient}
 
 import com.google.protobuf.TextFormat
-import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
-import protobufui.gui.workspace.message.MessageView
+import ipetoolkit.workspace.WorkspaceEntry
 import protobufui.service.source.ClassesContainer
 import protobufui.service.source.ClassesContainer.MessageClass
 
@@ -15,10 +14,9 @@ class MessageEntry extends WorkspaceEntry {
   def this(messageClass: MessageClass)={
     this
     this.messageClass = messageClass
-    this.view.nameProperty.set(uuid)
+    this.setName(uuid)
   }
 
-  override val view: WorkspaceEntryView = new MessageView(this)
   private var messageClass: MessageClass = _
   private var messageText:String = _
   private var textArea: TextArea = _

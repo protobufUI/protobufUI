@@ -8,8 +8,9 @@ import javafx.scene.control.{ComboBox, TextArea, TextField}
 import akka.actor.Props
 import akka.util.ByteString
 import com.google.protobuf.{Message, TextFormat}
+import ipetoolkit.details.DetailsController
 import ipetoolkit.util.JavaFXDispatcher
-import ipetoolkit.workspace.{DetailsController, WorkspaceEntry}
+import ipetoolkit.workspace.WorkspaceEntry
 import protobufui.Main
 import protobufui.service.message.MessageEntry
 import protobufui.service.socket.MessageSenderSupervisor
