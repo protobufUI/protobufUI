@@ -28,7 +28,30 @@ class SendMessageStepRunner(step: SendMessageStepEntry) extends TestStepRunner {
       promise.complete(scala.util.Success((ResultType.Failure, context)))
     }
 
-    context.actorSystem.actorOf(Props(new MessageSenderSupervisor(address, step.message, onResponse, onSendFailed)))
+    val newMessage = getModifiedMessage(context)
+    context.actorSystem.actorOf(Props(new MessageSenderSupervisor(address, newMessage, onResponse, onSendFailed)))
     promise.future
+  }
+
+  private def getModifiedMessage(context: TestStepContext): MessageLite = {
+
+    val newMessageBuilder = step.message.toBuilder
+
+    context.propertyValueMap.foreach { propertyEntry => {
+      val field = newMessageBuilder.getDescriptorForType.findFieldByName(propertyEntry._1)
+      if (field != null) {
+        val fieldType = field.getDefaultValue.getClass.getSimpleName
+        var castedField: Any = null.asInstanceOf[Any]
+        fieldType match {
+          case "Integer" => castedField = propertyEntry._2.toInt
+          case "String" => castedField = propertyEntry._2
+          case "Boolean" => castedField = propertyEntry._2.toBoolean
+        }
+        newMessageBuilder.setField(field, castedField)
+      }
+    }
+    }
+
+    newMessageBuilder.build()
   }
 }
