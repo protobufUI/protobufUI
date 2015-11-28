@@ -34,7 +34,7 @@ class MainController extends Initializable {
     workspaceTreeView.setShowRoot(false)
     import Main.eventBus
     val wm = Main.actorSystem.actorOf(WorkspaceManager.props(workspaceTreeView))
-    wm ! LoadOrNewWorkspace(workspaceFileDir, RootEntry.createRootEntryWithSubRoots(), (model: WorkspaceEntry) => new RootView(model))
+    var result = wm ! LoadOrNewWorkspace(workspaceFileDir, RootEntry.createRootEntryWithSubRoots(), (model: WorkspaceEntry) => new RootView(model))
     Main.actorSystem.actorOf(DetailsTabPaneManager.props(detailsTabPane))
     initExpandingResultView()
 

@@ -8,6 +8,8 @@ import javafx.stage.FileChooser.ExtensionFilter
 import javafx.stage.{DirectoryChooser, FileChooser}
 
 import akka.actor.Props
+import akka.pattern.ask
+import akka.util.Timeout
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView}
 import protobufui.gui.Main
 import protobufui.model.MessageEntry
@@ -16,6 +18,8 @@ import protobufui.service.message.{ClassesContainer, ClassesLoader}
 import protobufui.util.Globals
 
 import scala.collection.JavaConverters._
+import scala.concurrent.Await
+import scala.concurrent.duration._
 import scala.language.implicitConversions
 
 
@@ -23,12 +27,23 @@ import scala.language.implicitConversions
 class MessagesRootView(val model: WorkspaceEntry) extends WorkspaceEntryView with InvalidationListener {
   private val workspaceRoot: File = new File(Globals.getProperty(Globals.Keys.workspaceRoot).get)
   val classesLoader = Main.actorSystem.actorOf(Props(new ClassesLoader(workspaceRoot)))
+  implicit val timeout = Timeout(5 seconds)
 
-  classesLoader ! LoadFromWorkspace
+  val result = Await.result(classesLoader ? LoadFromWorkspace, timeout.duration)
+
+
+  // TODO znaleźć dlaczego do cholery jeden element dodaje się dwa razy
+  result match {
+    case protobufui.service.message.Loaded =>{
+      ClassesContainer.getClasses.foreach {
+        x => addChild(new MessageEntry(x))
+      }
+    }
+  }
 
   ClassesContainer.addListener(this)
   override def invalidated(observable: Observable): Unit = {
-    ClassesContainer.getClasses.foreach { x => addChild(new MessageEntry(x)) }
+
   }
 
   override def contextMenu: Option[ContextMenu] = {

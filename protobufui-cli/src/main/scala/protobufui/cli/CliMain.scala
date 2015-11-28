@@ -4,12 +4,13 @@ import java.io.File
 import java.time.LocalDateTime
 import javax.xml.bind.{JAXBContext, Marshaller}
 
-import akka.actor.{ActorSystem, Props}
+import akka.actor.{Props, ActorSystem}
+import akka.pattern.ask
 import ipetoolkit.workspace.WorkspacePersistence
 import ipetoolkit.workspace.WorkspacePersistence.{Load, Loaded}
 import protobufui.model.RootEntry
 import protobufui.service.message.ClassesLoader
-import protobufui.service.message.ClassesLoader.Put
+import protobufui.service.message.ClassesLoader.{LoadFromWorkspace, Put}
 import protobufui.service.testengine.report.TestReportCreator
 import protobufui.service.testengine.report.generated.Testsuites
 import protobufui.service.testengine.runner.TestSuiteRunner
@@ -18,11 +19,16 @@ import protobufui.util.Globals
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
-import akka.pattern.ask
 
 object CliMain {
 
   implicit val actorSystem = ActorSystem("protbufui-cli")
+
+  def main(args: Array[String]): Unit = {
+     start(Parser.parse(args))
+  }
+
+
 
   def start(config: Config) = {
     Globals.setProperty(Globals.Keys.workspaceRoot, config.workspace.getParentFile.getAbsolutePath)
@@ -33,24 +39,28 @@ object CliMain {
     val loadedMsg = Await.result((workspacePersistence ? Load(config.workspace)).mapTo[Loaded], 30 seconds)
     loadedMsg match {
       case Loaded(Success(rootEntry: RootEntry)) =>
+        loadClasses(config)
         runTests(config, rootEntry)
       case Loaded(Failure(e)) =>
         Console.out.println("Workspace could not be parsed.")
         e.printStackTrace()
     }
 
+  }
 
+  def loadClasses(config: Config) = {
+    val cliClassFinder = new CliClassFinder(config, actorSystem)
   }
 
   def runTests(config: Config, rootEntry: RootEntry) = {
 
-
     implicit val timeout = akka.util.Timeout(30 second)
     val classesLoader = actorSystem.actorOf(Props(new ClassesLoader(config.workspace.getParentFile)))
 
+    val result = Await.result(classesLoader ? LoadFromWorkspace, 15 second)
+
     if(config.load!=null) classesLoader ! Put(config.load)
 
-    //Thread.sleep(10000)
     val testSuites = if (config.suites.nonEmpty) rootEntry.getTests.filter(s => config.suites.contains(s.getName)) else rootEntry.getTests
 
     Console.out.println("Running Tests")
@@ -81,4 +91,10 @@ object CliMain {
   }
 }
 
-//TODO nieserializuje sie messages
+class CliClassFinder(config : Config, actorSystem: ActorSystem) {
+
+
+
+}
+
+

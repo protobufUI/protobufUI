@@ -2,13 +2,14 @@ package protobufui.service.message
 
 import java.io.File
 
-import akka.actor.{ActorRef, Actor, ActorLogging, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import protobufui.service.message.ClassesLoader._
 import protobufui.service.message.loaders._
 
 case class Load(file: File)
 case class Loaded()
 case class Reload()
+
 object ClassesLoader {
 
   /**
@@ -32,9 +33,12 @@ class ClassesLoader(workspaceRoot: File) extends Actor with ActorLogging {
   private val jarLoader = context.actorOf(Props(classOf[JarLoader]), "jarLoader")
   private val protoLoader = context.actorOf(Props(classOf[ProtoLoader]), "protoLoader")
 
+  var originalSender : ActorRef = null
+
   override def receive: Receive = {
     case LoadFromWorkspace =>
       workspaceLoader ! Load(null)
+      originalSender = sender
     case Put(file) if file.isDirectory =>
       directoryLoader ! Load(file)
     case Put(file) if file.getName.endsWith(".jar") =>
@@ -42,7 +46,7 @@ class ClassesLoader(workspaceRoot: File) extends Actor with ActorLogging {
     case Put(file) if file.getName.endsWith(".proto") =>
       protoLoader ! Load(file)
     case Loaded =>
-      {}
+      originalSender ! Loaded
     case x =>
       throw new IllegalArgumentException("Do not know what to load")
   }

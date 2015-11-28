@@ -16,11 +16,22 @@ class MessageEntry extends WorkspaceEntry {
     this.setName(uuid)
   }
 
+
+
+
+
   private var messageClass: MessageClass = _
   private var messageText:String = _
   private var textArea: TextArea = _
 
-  override def uuid = messageClass.clazz.getName
+  override def uuid = {
+    if(messageClass != null){
+       messageClass.clazz.getName
+    }else{
+       super.uuid
+    }
+  }
+
   def initRequestArea(textArea: TextArea)={
     this.textArea = textArea
     if(messageText == null || messageText.isEmpty) {
