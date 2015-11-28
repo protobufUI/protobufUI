@@ -3,43 +3,32 @@ package protobufui.gui.controllers
 import java.io.File
 import java.net.URL
 import java.util.ResourceBundle
-import javafx.event.EventHandler
 import javafx.fxml.{FXML, Initializable}
-import javafx.geometry.Pos
 import javafx.scene.control.{Label, TabPane, TreeView}
-import javafx.scene.input.MouseEvent
-import javafx.scene.layout.{BorderPane, HBox, StackPane}
+import javafx.scene.layout.{BorderPane, HBox}
 
 import ipetoolkit.details.DetailsTabPaneManager
 import ipetoolkit.workspace.WorkspaceManagement.{LoadOrNewWorkspace, SaveWorkspace}
 import ipetoolkit.workspace.{WorkspaceEntry, WorkspaceEntryView, WorkspaceManager}
 import protobufui.gui.Main
 import protobufui.gui.workspace.RootView
-import protobufui.util.Globals
-
 import protobufui.model.RootEntry
+import protobufui.util.Globals
 
 
 class MainController extends Initializable {
 
+  val workspaceFileName = "workspace.xml"
   @FXML
   var workspaceTreeView: TreeView[WorkspaceEntryView] = _
-
   @FXML
   var expandingResultButton: Label = _
-
   @FXML
   var expandingResultView: BorderPane = _
-
   @FXML
   var expandingBar: HBox = _
-
   @FXML
   var detailsTabPane: TabPane = _
-
-  val workspaceFileName = "workspace.xml"
-
-  def workspaceFileDir = Globals.getProperty(Globals.Keys.workspaceRoot).get + File.separator + workspaceFileName
 
   override def initialize(location: URL, resources: ResourceBundle): Unit = {
     workspaceTreeView.setShowRoot(false)
@@ -51,26 +40,28 @@ class MainController extends Initializable {
 
   }
 
-  def initExpandingResultView(): Unit = {
-    expandingResultButton onMouseEnteredProperty() setValue new EventHandler[MouseEvent] {
-      override def handle(event: MouseEvent): Unit = expandingResultButton.setId("lightShadow")
-    }
-    expandingResultButton onMouseExitedProperty() setValue new EventHandler[MouseEvent] {
-      override def handle(event: MouseEvent): Unit = expandingResultButton.setId("")
-    }
-    expandingResultButton onMouseClickedProperty() setValue new EventHandler[MouseEvent] {
-      override def handle(event: MouseEvent): Unit = toggleResultViewVisible()
-    }
-    StackPane.setAlignment(expandingResultView, Pos.BOTTOM_CENTER)
+  def workspaceFileDir = Globals.getProperty(Globals.Keys.workspaceRoot).get + File.separator + workspaceFileName
 
-    expandingResultView.setDisable(true)
-    expandingResultView.setVisible(false)
+  def initExpandingResultView(): Unit = {
+    //    expandingResultButton onMouseEnteredProperty() setValue new EventHandler[MouseEvent] {
+    //      override def handle(event: MouseEvent): Unit = expandingResultButton.setId("lightShadow")
+    //    }
+    //    expandingResultButton onMouseExitedProperty() setValue new EventHandler[MouseEvent] {
+    //      override def handle(event: MouseEvent): Unit = expandingResultButton.setId("")
+    //    }
+    //    expandingResultButton onMouseClickedProperty() setValue new EventHandler[MouseEvent] {
+    //      override def handle(event: MouseEvent): Unit = toggleResultViewVisible()
+    //    }
+    //    StackPane.setAlignment(expandingResultView, Pos.BOTTOM_CENTER)
+    //
+    //    expandingResultView.setDisable(true)
+    //    expandingResultView.setVisible(false)
 
   }
 
   def toggleResultViewVisible(): Unit = {
-    expandingResultView.setDisable(!expandingResultView.isDisable)
-    expandingResultView.setVisible(!expandingResultView.isVisible)
+    //    expandingResultView.setDisable(!expandingResultView.isDisable)
+    //    expandingResultView.setVisible(!expandingResultView.isVisible)
   }
 
 

@@ -25,16 +25,16 @@
                 <padding>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                 </padding>
-                <Button mnemonicParsing="false" text="Button"/>
-                <Button prefHeight="26" maxHeight="26">
-                    <graphic>
-                        <ImageView fitHeight="15" fitWidth="15">
-                            <image>
-                                <Image url="/img/run.png"/>
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
+                <!--<Button mnemonicParsing="false" text="Button"/>-->
+                <!--<Button prefHeight="26" maxHeight="26">-->
+                <!--<graphic>-->
+                <!--<ImageView fitHeight="15" fitWidth="15">-->
+                <!--<image>-->
+                <!--<Image url="/img/run.png"/>-->
+                <!--</image>-->
+                <!--</ImageView>-->
+                <!--</graphic>-->
+                <!--</Button>-->
             </ToolBar>
         </VBox>
     </top>
@@ -44,28 +44,28 @@
                 <TreeView fx:id="workspaceTreeView"/>
                 <TabPane fx:id="detailsTabPane" tabClosingPolicy="UNAVAILABLE"/>
             </HBox>
-            <BorderPane StackPane.alignment="BOTTOM_CENTER" id="lightShadow" fx:id="expandingResultView"
-                        maxHeight="200">
-                <center>
-                    <TabPane fx:id="expandingTabPane">
-                        <Tab text="Test results" closable="false">
-                            <BorderPane>
-                                <ListView fx:id="testResultList"/>
-                            </BorderPane>
-                        </Tab>
-                    </TabPane>
-                </center>
-            </BorderPane>
+            <!--<BorderPane StackPane.alignment="BOTTOM_CENTER" id="lightShadow" fx:id="expandingResultView"-->
+            <!--maxHeight="200">-->
+            <!--<center>-->
+            <!--<TabPane fx:id="expandingTabPane">-->
+            <!--<Tab text="Test results" closable="false">-->
+            <!--<BorderPane>-->
+            <!--<ListView fx:id="testResultList"/>-->
+            <!--</BorderPane>-->
+            <!--</Tab>-->
+            <!--</TabPane>-->
+            <!--</center>-->
+            <!--</BorderPane>-->
         </StackPane>
     </center>
     <bottom>
-        <HBox fx:id="expandingBar" alignment="BASELINE_RIGHT" prefHeight="30">
-            <Label fx:id="expandingResultButton" text="Test results">
-                <padding>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                </padding>
-            </Label>
-        </HBox>
+        <!--<HBox fx:id="expandingBar" alignment="BASELINE_RIGHT" prefHeight="30">-->
+        <!--&lt;!&ndash;<Label fx:id="expandingResultButton" text="Test results">&ndash;&gt;-->
+        <!--&lt;!&ndash;<padding>&ndash;&gt;-->
+        <!--&lt;!&ndash;<Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;</padding>&ndash;&gt;-->
+        <!--&lt;!&ndash;</Label>&ndash;&gt;-->
+        <!--</HBox>-->
     </bottom>
 </BorderPane>
 
